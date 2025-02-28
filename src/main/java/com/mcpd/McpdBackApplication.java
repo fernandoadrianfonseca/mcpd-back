@@ -16,7 +16,7 @@ public class McpdBackApplication extends SpringBootServletInitializer {
         SpringApplication.run(McpdBackApplication.class, args);
     }
 
-    @RequestMapping("/municipalidad")
+    @RequestMapping("/")
     public String mainPage(){
         return "Municipalidad De Puerto Deseado Application";
     }
