@@ -1,5 +1,6 @@
 package com.mcpd.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 @Entity
@@ -13,7 +14,7 @@ public class Producto {
     @Column(nullable = false)
     private String nombre;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "categoria", nullable = false)
     private ProductosCategoria categoria;
 

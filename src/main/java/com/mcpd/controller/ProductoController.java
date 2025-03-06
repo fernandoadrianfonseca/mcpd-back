@@ -20,7 +20,8 @@ public class ProductoController extends AbstractCrudController<Producto> {
 
     @Override
     protected List<Producto> getAllEntities() {
-        return service.getAll();
+        List<Producto> list=service.getAll();
+        return list;
     }
 
     @Override
