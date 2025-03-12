@@ -1,7 +1,7 @@
 package com.mcpd.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
+import java.util.Date;
 
 @Entity
 @Table(name = "Productos")
@@ -20,6 +20,25 @@ public class Producto {
 
     @Column(nullable = false)
     private String categoriaNombre;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(nullable = false, updatable = false)
+    private Date fechaDeCarga;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(nullable = false)
+    private Date updated;
+
+    @PrePersist
+    protected void onCreate() {
+        fechaDeCarga = new Date();
+        updated = new Date();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updated = new Date();
+    }
 
     public Integer getId() {
         return id;
@@ -51,5 +70,13 @@ public class Producto {
 
     public void setCategoriaNombre(String categoriaNombre) {
         this.categoriaNombre = categoriaNombre;
+    }
+
+    public Date getFechaDeCarga() {
+        return fechaDeCarga;
+    }
+
+    public Date getUpdated() {
+        return updated;
     }
 }

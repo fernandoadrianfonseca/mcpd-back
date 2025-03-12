@@ -18,6 +18,13 @@ public class ProductosStock {
     @Column(nullable = false)
     private String categoriaNombre;
 
+    @ManyToOne
+    @JoinColumn(name = "producto", nullable = false)
+    private Producto producto;
+
+    @Column(nullable = false)
+    private String productoNombre;
+
     @Column(nullable = false)
     private Integer cantidad;
 
@@ -34,8 +41,12 @@ public class ProductosStock {
     private String numeroDeSerie;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(nullable = false)
+    @Column(nullable = false, updatable = false)
     private Date fechaDeCarga;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(nullable = false)
+    private Date updated;
 
     @Column(nullable = false, length = 255)
     private String tipo;
@@ -55,6 +66,17 @@ public class ProductosStock {
     private String motivoBaja;
     private String fechaDeDevolucion;
     private String observaciones;
+
+    @PrePersist
+    protected void onCreate() {
+        fechaDeCarga = new Date();
+        updated = new Date();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updated = new Date();
+    }
 
     public Integer getId() {
         return id;
@@ -78,6 +100,22 @@ public class ProductosStock {
 
     public void setCategoriaNombre(String categoriaNombre) {
         this.categoriaNombre = categoriaNombre;
+    }
+
+    public Producto getProducto() {
+        return producto;
+    }
+
+    public void setProducto(Producto producto) {
+        this.producto = producto;
+    }
+
+    public String getProductoNombre() {
+        return productoNombre;
+    }
+
+    public void setProductoNombre(String productoNombre) {
+        this.productoNombre = productoNombre;
     }
 
     public Integer getCantidad() {
@@ -140,8 +178,8 @@ public class ProductosStock {
         return fechaDeCarga;
     }
 
-    public void setFechaDeCarga(Date fechaDeCarga) {
-        this.fechaDeCarga = fechaDeCarga;
+    public Date getUpdated() {
+        return updated;
     }
 
     public String getTipo() {

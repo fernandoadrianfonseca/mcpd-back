@@ -1,9 +1,10 @@
 package com.mcpd.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.mcpd.model.Producto;
 import jakarta.persistence.*;
-
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -20,6 +21,25 @@ public class ProductosCategoria {
     @OneToMany(mappedBy = "categoria", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Producto> productos = new ArrayList<>();
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(nullable = false, updatable = false)
+    private Date fechaDeCarga;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(nullable = false)
+    private Date updated;
+
+    @PrePersist
+    protected void onCreate() {
+        fechaDeCarga = new Date();
+        updated = new Date();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updated = new Date();
+    }
 
     public Integer getId() {
         return id;
@@ -43,5 +63,13 @@ public class ProductosCategoria {
 
     public void setProductos(List<Producto> productos) {
         this.productos = productos;
+    }
+
+    public Date getFechaDeCarga() {
+        return fechaDeCarga;
+    }
+
+    public Date getUpdated() {
+        return updated;
     }
 }
