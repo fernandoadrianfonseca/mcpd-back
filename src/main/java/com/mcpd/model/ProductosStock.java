@@ -29,7 +29,7 @@ public class ProductosStock {
     private Integer cantidad;
 
     @Column(nullable = false)
-    private Long precio;
+    private Long precio=0L;
 
     private String marca;
     private String modelo;
@@ -55,13 +55,13 @@ public class ProductosStock {
     private String remito;
 
     @Column(nullable = false, columnDefinition = "BIGINT DEFAULT 0")
-    private Long custodia;
+    private Long custodia=0L;
 
     @Column(nullable = false, columnDefinition = "BIGINT DEFAULT 0")
-    private Long acta;
+    private Long acta=0L;
 
     @Column(nullable = false, columnDefinition = "BIGINT DEFAULT 0")
-    private Long transfiere;
+    private Long transfiere=0L;
 
     private String motivoBaja;
     private String fechaDeDevolucion;

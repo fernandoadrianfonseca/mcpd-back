@@ -1,12 +1,11 @@
 package com.mcpd.model;
 
 import jakarta.persistence.*;
-
 import java.io.Serializable;
 import java.util.Date;
 
 @Entity
-@Table(name = "mcpdContribuyente")
+@Table(name = "mcpdcontribuyente")
 public class Contribuyente implements Serializable {
 
     @Id
@@ -14,7 +13,7 @@ public class Contribuyente implements Serializable {
     private Long cuit;
 
     @Column(name = "Nombre", nullable = false)
-    private String nombre = "COMPLETAR";
+    private String nombre = "";
 
     @Column(name = "Domicilio")
     private String domicilio;

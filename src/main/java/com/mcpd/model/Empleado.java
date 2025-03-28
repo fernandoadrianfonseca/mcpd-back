@@ -6,7 +6,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "rrhhEmpleado")
+@Table(name = "rrhhempleado")
 public class Empleado implements Serializable {
 
     @Id
@@ -23,218 +23,221 @@ public class Empleado implements Serializable {
     private String cuenta;
 
     @Column(name = "activo", nullable = false)
-    private Boolean activo;
+    private Boolean activo = false;
 
-    @Column(name = "fechaIngreso")
+    @Column(name = "fechaingreso")
     private LocalDateTime fechaIngreso;
 
     @Column(name = "agrupamiento", nullable = false)
     private Integer agrupamiento;
 
     @Column(name = "esposa", nullable = false)
-    private Boolean esposa;
+    private Boolean esposa = false;
 
     @Column(name = "hijos", nullable = false)
-    private Integer hijos;
+    private Integer hijos = 0;
 
     @Column(name = "escprim", nullable = false)
-    private Integer escprim;
+    private Integer escprim = 0;
 
     @Column(name = "escsec", nullable = false)
-    private Integer escsec;
+    private Integer escsec = 0;
 
     @Column(name = "ayudaprim", nullable = false)
-    private Integer ayudaprim;
+    private Integer ayudaprim = 0;
 
     @Column(name = "ayudasec", nullable = false)
-    private Integer ayudasec;
+    private Integer ayudasec = 0;
 
     @Column(name = "hijoinc", nullable = false)
-    private Integer hijoinc;
+    private Integer hijoinc = 0;
 
     @Column(name = "titulo", nullable = false)
-    private Integer titulo;
+    private Integer titulo = 0;
 
     @Column(name = "carpeta", nullable = false)
-    private Boolean carpeta;
+    private Boolean carpeta = false;
 
-    @Column(name = "fechaCarpeta", nullable = false)
-    private LocalDateTime fechaCarpeta;
+    @Column(name = "fechacarpeta", nullable = false)
+    private LocalDateTime fechaCarpeta = LocalDateTime.of(1900, 1, 1, 0, 0);
 
-    @Column(name = "usoPc")
+    @Column(name = "usopc")
     private Boolean usoPc;
 
-    @Column(name = "manejoFondos", nullable = false)
-    private Boolean manejoFondos;
+    @Column(name = "manejofondos", nullable = false)
+    private Boolean manejoFondos = false;
 
     @Column(name = "inspector", nullable = false)
-    private Boolean inspector;
+    private Boolean inspector = false;
 
     @Column(name = "puericultura", nullable = false)
-    private Boolean puericultura;
+    private Boolean puericultura = false;
 
     @Column(name = "jefatura", nullable = false)
-    private Boolean jefatura;
+    private Boolean jefatura = false;
 
-    @Column(name = "laborEventual", nullable = false)
-    private Boolean laborEventual;
+    @Column(name = "laboreventual", nullable = false)
+    private Boolean laborEventual = false;
 
     @Column(name = "riesgo", nullable = false)
-    private Boolean riesgo;
+    private Boolean riesgo = false;
 
-    @Column(name = "encargadoCuadrilla", nullable = false)
-    private Boolean encargadoCuadrilla;
+    @Column(name = "encargadocuadrilla", nullable = false)
+    private Boolean encargadoCuadrilla = false;
 
-    @Column(name = "ultimoAscenso", nullable = false)
-    private LocalDateTime ultimoAscenso;
+    @Column(name = "ultimoascenso", nullable = false)
+    private LocalDateTime ultimoAscenso = LocalDateTime.of(1900, 1, 1, 0, 0);;
 
     @Column(name = "isprovol", nullable = false)
-    private Boolean isprovol;
+    private Boolean isprovol = false;
 
-    @Column(name = "familiarAcargo", nullable = false)
-    private Boolean familiarAcargo;
+    @Column(name = "familiaracargo", nullable = false)
+    private Boolean familiarAcargo = false;
 
     @Column(name = "soem", nullable = false)
-    private Boolean soem;
+    private Boolean soem = false;
 
     @Column(name = "apap", nullable = false)
-    private Boolean apap;
+    private Boolean apap = false;
 
     @Column(name = "tpc", nullable = false)
-    private Boolean tpc;
+    private Boolean tpc = false;
 
-    @Column(name = "tpcAmparo", nullable = false)
-    private Boolean tpcAmparo;
+    @Column(name = "tpcamparo", nullable = false)
+    private Boolean tpcAmparo = false;
 
-    @Column(name = "cajaAhorro", nullable = false)
-    private Boolean cajaAhorro;
+    @Column(name = "cajaahorro", nullable = false)
+    private Boolean cajaAhorro = false;
 
     @Column(name = "sucursal", nullable = false)
-    private Integer sucursal;
+    private Integer sucursal = 0;
 
-    @Column(name = "antReconocida", nullable = false)
-    private Integer antReconocida;
+    @Column(name = "antreconocida", nullable = false)
+    private Integer antReconocida = 0;
 
     @Column(name = "tesoreria", nullable = false)
-    private Boolean tesoreria;
+    private Boolean tesoreria = false;
 
     @Column(name = "ate", nullable = false)
-    private Boolean ate;
+    private Boolean ate = false;
 
     @Column(name = "secretaria", length = 50)
     private String secretaria;
 
     @Column(name = "comision", nullable = false)
-    private Boolean comision;
+    private Boolean comision = false;
 
     @Column(name = "nocturnidad", nullable = false)
-    private Boolean nocturnidad;
+    private Boolean nocturnidad = false;
 
-    @Column(name = "jefeHCD", nullable = false)
-    private Boolean jefeHCD;
+    @Column(name = "jefehcd", nullable = false)
+    private Boolean jefeHCD = false;
 
-    @Column(name = "directorHCD", nullable = false)
-    private Boolean directorHCD;
+    @Column(name = "directorhcd", nullable = false)
+    private Boolean directorHCD = false;
 
-    @Column(name = "vacacionesPlanta", nullable = false)
-    private Float vacacionesPlanta;
+    @Column(name = "vacacionesplanta", nullable = false)
+    private Float vacacionesPlanta = 0.0f;
 
     @Column(name = "articulos", nullable = false)
-    private Integer articulos;
+    private Integer articulos = 0;
 
-    @Column(name = "antPrivada", nullable = false)
-    private Integer antPrivada;
+    @Column(name = "antprivada", nullable = false)
+    private Integer antPrivada = 0;
 
-    @Column(name = "vacacionesPolitica", nullable = false)
-    private Float vacacionesPolitica;
+    @Column(name = "vacacionespolitica", nullable = false)
+    private Float vacacionesPolitica = 0.0f;
 
     @Column(name = "actualizado", nullable = false)
-    private LocalDateTime actualizado;
+    private LocalDateTime actualizado = LocalDateTime.of(1900, 1, 1, 0, 0);
 
     @Column(name = "horas100", nullable = false)
-    private Float horas100;
+    private Float horas100 = 0.0f;
 
     @Column(name = "horas50", nullable = false)
-    private Float horas50;
+    private Float horas50 = 0.0f;
 
     @Column(name = "sistema", nullable = false)
     private Boolean sistema;
 
-    @Lob
+    /*@Lob
     @Column(name = "dato", nullable = false)
-    private byte[] dato;
+    private byte[] dato;*/
 
     @Column(name = "vence", nullable = false)
-    private LocalDate vence;
+    private LocalDate vence = LocalDate.of(1900, 1, 1);
 
-    @Column(name = "Dependencia", nullable = false, length = 50)
+    @Column(name = "dependencia", nullable = false, length = 50)
     private String dependencia;
 
-    @Column(name = "Perfil", nullable = false)
-    private Integer perfil;
+    @Column(name = "perfil", nullable = false)
+    private Integer perfil = 3;
 
-    @Column(name = "laborHSC", nullable = false)
-    private Boolean laborHSC;
+    @Column(name = "laborhsc", nullable = false)
+    private Boolean laborHSC = false;
 
-    @Column(name = "cuidadorHSC", nullable = false)
-    private Boolean cuidadorHSC;
+    @Column(name = "cuidadorhsc", nullable = false)
+    private Boolean cuidadorHSC = false;
 
     @Column(name = "recolector", nullable = false)
-    private Boolean recolector;
+    private Boolean recolector = false;
 
     @Column(name = "transito", nullable = false)
-    private Boolean transito;
+    private Boolean transito = false;
 
     @Column(name = "bromatologia", nullable = false)
-    private Boolean bromatologia;
+    private Boolean bromatologia = false;
 
     @Column(name = "obra", nullable = false)
-    private Boolean obra;
+    private Boolean obra = false;
 
     @Column(name = "ambiente", nullable = false)
-    private Boolean ambiente;
+    private Boolean ambiente = false;
 
     @Column(name = "canino", nullable = false)
-    private Boolean canino;
+    private Boolean canino = false;
 
     @Column(name = "higiene", nullable = false)
-    private Boolean higiene;
+    private Boolean higiene = false;
 
     @Column(name = "ordenanza", nullable = false)
-    private Boolean ordenanza;
+    private Boolean ordenanza = false;
 
-    @Column(name = "flotaPesada", nullable = false)
-    private Boolean flotaPesada;
+    @Column(name = "flotapesada", nullable = false)
+    private Boolean flotaPesada = false;
 
-    @Column(name = "tareasAdminHCD", nullable = false)
-    private Boolean tareasAdminHCD;
+    @Column(name = "tareasadminhcd", nullable = false)
+    private Boolean tareasAdminHCD = false;
 
-    @Column(name = "choferesPem", nullable = false)
-    private Boolean choferesPem;
+    @Column(name = "choferespem", nullable = false)
+    private Boolean choferesPem = false;
 
-    @Column(name = "laborSalaMaquinaCalderaCJ", nullable = false)
-    private Boolean laborSalaMaquinaCalderaCJ;
+    @Column(name = "laborsalamaquinacalderacj", nullable = false)
+    private Boolean laborSalaMaquinaCalderaCJ = false;
 
-    @Column(name = "responFinanCont", nullable = false)
-    private Boolean responFinanCont;
+    @Column(name = "responfinancont", nullable = false)
+    private Boolean responFinanCont = false;
 
-    @Column(name = "tareasCementerio", nullable = false)
-    private Boolean tareasCementerio;
+    @Column(name = "tareascementerio", nullable = false)
+    private Boolean tareasCementerio = false;
 
-    @Column(name = "laborMuseosArch", nullable = false)
-    private Boolean laborMuseosArch;
+    @Column(name = "labormuseosarch", nullable = false)
+    private Boolean laborMuseosArch = false;
 
-    @Column(name = "laborMuseos", nullable = false)
-    private Boolean laborMuseos;
+    @Column(name = "labormuseos", nullable = false)
+    private Boolean laborMuseos = false;
 
-    @Column(name = "laborConservArch", nullable = false)
-    private Boolean laborConservArch;
+    @Column(name = "laborconservarch", nullable = false)
+    private Boolean laborConservArch = false;
 
-    @Column(name = "laborConservLab", nullable = false)
-    private Boolean laborConservLab;
+    @Column(name = "laborconservlab", nullable = false)
+    private Boolean laborConservLab = false;
 
-    @Column(name = "trabajaEnProvincia", nullable = false)
-    private Boolean trabajaEnProvincia;
+    @Column(name = "trabajaenprovincia", nullable = false)
+    private Boolean trabajaEnProvincia = false;
+
+    @Transient
+    private String nombre;
 
     public Long getLegajo() {
         return legajo;
@@ -636,13 +639,13 @@ public class Empleado implements Serializable {
         this.sistema = sistema;
     }
 
-    public byte[] getDato() {
+    /*public byte[] getDato() {
         return dato;
     }
 
     public void setDato(byte[] dato) {
         this.dato = dato;
-    }
+    }*/
 
     public LocalDate getVence() {
         return vence;
@@ -834,5 +837,13 @@ public class Empleado implements Serializable {
 
     public void setTrabajaEnProvincia(Boolean trabajaEnProvincia) {
         this.trabajaEnProvincia = trabajaEnProvincia;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
     }
 }
