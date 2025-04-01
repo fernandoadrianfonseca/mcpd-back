@@ -50,4 +50,33 @@ public class AuthRepository {
         }
         return null;
     }
+
+    public void modificarUsuario(String usuario, String password) {
+        try {
+            StoredProcedureQuery query = entityManager.createStoredProcedureQuery("seguridadModificaUsuario");
+
+            query.registerStoredProcedureParameter("Usuario", String.class, ParameterMode.IN);
+            query.registerStoredProcedureParameter("Password", String.class, ParameterMode.IN);
+
+            query.setParameter("Usuario", usuario);
+            query.setParameter("Password", password);
+
+            query.execute();
+        } catch (Exception e) {
+            throw new RuntimeException("Error al modificar usuario: " + e.getMessage());
+        }
+    }
+
+    public void blanquearUsuario(String usuario) {
+        try {
+            StoredProcedureQuery query = entityManager.createStoredProcedureQuery("seguridadBlanqueaUsuario");
+
+            query.registerStoredProcedureParameter("Usuario", String.class, ParameterMode.IN);
+            query.setParameter("Usuario", usuario);
+
+            query.execute();
+        } catch (Exception e) {
+            throw new RuntimeException("Error al blanquear usuario: " + e.getMessage());
+        }
+    }
 }

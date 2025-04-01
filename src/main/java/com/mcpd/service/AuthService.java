@@ -16,4 +16,12 @@ public class AuthService {
     public UsuarioDto login(String usuario, String password) {
         return authRepository.autenticarUsuario(usuario, password);
     }
+
+    public void modificarUsuario(String usuario, String password) {
+        authRepository.modificarUsuario(usuario, password);
+    }
+
+    public void blanquearUsuario(String usuario) {
+        authRepository.blanquearUsuario(usuario);
+    }
 }

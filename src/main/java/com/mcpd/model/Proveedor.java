@@ -5,14 +5,14 @@ import java.io.Serializable;
 import java.util.Date;
 
 @Entity
-@Table(name = "mcpdProveedor")
+@Table(name = "mcpdproveedor")
 public class Proveedor implements Serializable {
 
     @Id
     @Column(name = "cuit", nullable = false)
     private Long cuit;
 
-    @Column(name = "nombreFantasia", nullable = false, length = 150)
+    @Column(name = "nombrefantasia", nullable = false, length = 150)
     private String nombreFantasia;
 
     @Column(name = "empleador", nullable = false)
@@ -33,6 +33,9 @@ public class Proveedor implements Serializable {
     @ManyToOne
     @JoinColumn(name = "cuit", referencedColumnName = "Cuit", insertable = false, updatable = false)
     private Contribuyente contribuyente;
+
+    @Transient
+    private String nombre;
 
     public Long getCuit() {
         return cuit;
@@ -96,5 +99,13 @@ public class Proveedor implements Serializable {
 
     public void setContribuyente(Contribuyente contribuyente) {
         this.contribuyente = contribuyente;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
     }
 }

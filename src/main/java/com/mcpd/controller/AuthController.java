@@ -25,4 +25,16 @@ public class AuthController {
             return ResponseEntity.status(401).body(null);
         }
     }
+
+    @PostMapping("/modificar")
+    public ResponseEntity<Void> modificarUsuario(@RequestParam String usuario, @RequestParam String password) {
+        authService.modificarUsuario(usuario, password);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/blanquear")
+    public ResponseEntity<Void> blanquearUsuario(@RequestParam String usuario) {
+        authService.blanquearUsuario(usuario);
+        return ResponseEntity.ok().build();
+    }
 }
