@@ -1,7 +1,9 @@
 package com.mcpd.controller;
 
+import com.mcpd.dto.AsignarCustodiaItem;
 import com.mcpd.model.ProductosStock;
 import com.mcpd.service.ProductosStockService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -41,5 +43,20 @@ public class ProductosStockController extends AbstractCrudController<ProductosSt
     @Override
     protected void setEntityId(ProductosStock entity, Integer id) {
         entity.setId(id);
+    }
+
+    @GetMapping("/custodia/{legajoCustodia}")
+    public List<ProductosStock> getStockActualPorCustodia(@PathVariable Long legajoCustodia) {
+        return productosStockService.getStockActualPorCustodia(legajoCustodia);
+    }
+
+    @GetMapping("disponible-asignar")
+    public List<ProductosStock> getStockDisponibleParaAsignar() {
+        return productosStockService.getStockDisponibleParaAsignar();
+    }
+
+    @PostMapping("/asignar-custodia")
+    public void asignarCustodia(@RequestBody List<AsignarCustodiaItem> items, @RequestParam("legajoEmpleado") Long legajoEmpleado) {
+        productosStockService.asignarCustodia(items, legajoEmpleado);
     }
 }

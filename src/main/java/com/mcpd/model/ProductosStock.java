@@ -28,17 +28,12 @@ public class ProductosStock {
     @Column(nullable = false)
     private Integer cantidad;
 
-    @Column(nullable = false)
-    private Long precio=0L;
+    @Column(name = "cantidad_custodia", nullable = false)
+    private Integer cantidadCustodia;
 
     private String marca;
     private String modelo;
     private String detalle;
-
-    @Column(nullable = false)
-    private Long unidades;
-
-    private String numeroDeSerie;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = false, updatable = false)
@@ -51,21 +46,8 @@ public class ProductosStock {
     @Column(nullable = false, length = 255)
     private String tipo;
 
-    private String ordenDeCompra;
-    private String remito;
-
-    @Column(nullable = false, columnDefinition = "BIGINT DEFAULT 0")
-    private Long custodia=0L;
-
-    @Column(nullable = false, columnDefinition = "BIGINT DEFAULT 0")
-    private Long acta=0L;
-
-    @Column(nullable = false, columnDefinition = "BIGINT DEFAULT 0")
-    private Long transfiere=0L;
-
-    private String motivoBaja;
-    private String fechaDeDevolucion;
-    private String observaciones;
+    @Column(nullable = false)
+    private Boolean consumible;
 
     @PrePersist
     protected void onCreate() {
@@ -126,12 +108,12 @@ public class ProductosStock {
         this.cantidad = cantidad;
     }
 
-    public Long getPrecio() {
-        return precio;
+    public Integer getCantidadCustodia() {
+        return cantidadCustodia;
     }
 
-    public void setPrecio(Long precio) {
-        this.precio = precio;
+    public void setCantidadCustodia(Integer cantidadCustodia) {
+        this.cantidadCustodia = cantidadCustodia;
     }
 
     public String getMarca() {
@@ -158,22 +140,6 @@ public class ProductosStock {
         this.detalle = detalle;
     }
 
-    public Long getUnidades() {
-        return unidades;
-    }
-
-    public void setUnidades(Long unidades) {
-        this.unidades = unidades;
-    }
-
-    public String getNumeroDeSerie() {
-        return numeroDeSerie;
-    }
-
-    public void setNumeroDeSerie(String numeroDeSerie) {
-        this.numeroDeSerie = numeroDeSerie;
-    }
-
     public Date getFechaDeCarga() {
         return fechaDeCarga;
     }
@@ -190,67 +156,11 @@ public class ProductosStock {
         this.tipo = tipo;
     }
 
-    public String getOrdenDeCompra() {
-        return ordenDeCompra;
+    public Boolean getConsumible() {
+        return consumible;
     }
 
-    public void setOrdenDeCompra(String ordenDeCompra) {
-        this.ordenDeCompra = ordenDeCompra;
-    }
-
-    public String getRemito() {
-        return remito;
-    }
-
-    public void setRemito(String remito) {
-        this.remito = remito;
-    }
-
-    public Long getCustodia() {
-        return custodia;
-    }
-
-    public void setCustodia(Long custodia) {
-        this.custodia = custodia;
-    }
-
-    public Long getActa() {
-        return acta;
-    }
-
-    public void setActa(Long acta) {
-        this.acta = acta;
-    }
-
-    public Long getTransfiere() {
-        return transfiere;
-    }
-
-    public void setTransfiere(Long transfiere) {
-        this.transfiere = transfiere;
-    }
-
-    public String getMotivoBaja() {
-        return motivoBaja;
-    }
-
-    public void setMotivoBaja(String motivoBaja) {
-        this.motivoBaja = motivoBaja;
-    }
-
-    public String getFechaDeDevolucion() {
-        return fechaDeDevolucion;
-    }
-
-    public void setFechaDeDevolucion(String fechaDeDevolucion) {
-        this.fechaDeDevolucion = fechaDeDevolucion;
-    }
-
-    public String getObservaciones() {
-        return observaciones;
-    }
-
-    public void setObservaciones(String observaciones) {
-        this.observaciones = observaciones;
+    public void setConsumible(Boolean consumible) {
+        this.consumible = consumible;
     }
 }
