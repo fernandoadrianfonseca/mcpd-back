@@ -9,6 +9,8 @@ import java.io.InputStream;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -32,9 +34,15 @@ public class ReporteService {
             //parametros.putIfAbsent("codigoOperacion", "OP-" + Instant.now().toEpochMilli());
             parametros.putIfAbsent("codigoOperacion", "OP-" + Instant.now().getEpochSecond());
 
+            List<Object> duplicados = new ArrayList<>();
+            for (Object item : datos) {
+                duplicados.add(item);
+
+            }
+            
             InputStream jrxmlStream = new ClassPathResource("reportes/" + nombreReporte + ".jrxml").getInputStream();
             JasperReport jasperReport = JasperCompileManager.compileReport(jrxmlStream);
-            JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(datos);
+            JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(duplicados);
             JasperPrint print = JasperFillManager.fillReport(jasperReport, parametros, dataSource);
             return JasperExportManager.exportReportToPdf(print);
         } catch (Exception e) {
