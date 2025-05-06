@@ -5,6 +5,10 @@
 	<parameter name="codigoOperacion" class="java.lang.String"/>
 	<parameter name="nombreEmpleado" class="java.lang.String"/>
 	<parameter name="legajoEmpleado" class="java.lang.String"/>
+	<parameter name="legajoEmpleadoRecibe" class="java.lang.String"/>
+	<parameter name="nombreEmpleadoRecibe" class="java.lang.String"/>
+	<parameter name="nombreEmpleadoEntrega" class="java.lang.String"/>
+	<parameter name="legajoEmpleadoEntrega" class="java.lang.String"/>
 	<field name="cantidad" class="java.lang.Number"/>
 	<field name="descripcion" class="java.lang.String"/>
 	<field name="oc" class="java.lang.String"/>
@@ -129,7 +133,7 @@
 				<textElement textAlignment="Center">
 					<font size="12"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{nombreEmpleado} + " (" + $P{legajoEmpleado} + ")"]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{nombreEmpleadoEntrega} + " (" + $P{legajoEmpleadoEntrega} + ")"]]></textFieldExpression>
 			</textField>
 		</band>
 	</summary>

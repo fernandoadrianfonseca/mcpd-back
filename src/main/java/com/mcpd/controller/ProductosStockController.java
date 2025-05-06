@@ -1,9 +1,8 @@
 package com.mcpd.controller;
 
-import com.mcpd.dto.AsignarCustodiaItem;
+import com.mcpd.dto.CustodiaItem;
 import com.mcpd.model.ProductosStock;
 import com.mcpd.service.ProductosStockService;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -50,13 +49,33 @@ public class ProductosStockController extends AbstractCrudController<ProductosSt
         return productosStockService.getStockActualPorCustodia(legajoCustodia);
     }
 
+    @GetMapping("/excluyendo-custodia/{legajoCustodia}")
+    public List<ProductosStock> getStockActualExcluyendoCustodia(@PathVariable Long legajoCustodia) {
+        return productosStockService.getStockActualExcluyendoCustodia(legajoCustodia);
+    }
+
     @GetMapping("disponible-asignar")
     public List<ProductosStock> getStockDisponibleParaAsignar() {
         return productosStockService.getStockDisponibleParaAsignar();
     }
 
     @PostMapping("/asignar-custodia")
-    public void asignarCustodia(@RequestBody List<AsignarCustodiaItem> items, @RequestParam("legajoEmpleado") Long legajoEmpleado) {
+    public void asignarCustodia(@RequestBody List<CustodiaItem> items, @RequestParam("legajoEmpleado") Long legajoEmpleado) {
         productosStockService.asignarCustodia(items, legajoEmpleado);
+    }
+
+    @PostMapping("/quitar-custodia")
+    public void quitarCustodia(@RequestBody List<CustodiaItem> items, @RequestParam("legajoEmpleado") Long legajoEmpleado) {
+        productosStockService.quitarCustodia(items, legajoEmpleado);
+    }
+
+    @PostMapping("/transferir-custodia")
+    public void transferirCustodia(
+            @RequestBody List<CustodiaItem> items,
+            @RequestParam("legajoOrigen") Long legajoOrigen,
+            @RequestParam("legajoDestino") Long legajoDestino,
+            @RequestParam("legajoCarga") Long legajoCarga
+    ) {
+        productosStockService.transferirCustodia(items, legajoOrigen, legajoDestino, legajoCarga);
     }
 }

@@ -1,6 +1,6 @@
 package com.mcpd.dto;
 
-public class AsignarCustodiaItem {
+public class CustodiaItem {
     private Integer stockId;
     private Long cantidad;
     private String observaciones;

@@ -37,9 +37,7 @@ public class ReporteService {
             List<Object> duplicados = new ArrayList<>();
             for (Object item : datos) {
                 duplicados.add(item);
-
             }
-            
             InputStream jrxmlStream = new ClassPathResource("reportes/" + nombreReporte + ".jrxml").getInputStream();
             JasperReport jasperReport = JasperCompileManager.compileReport(jrxmlStream);
             JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(duplicados);
