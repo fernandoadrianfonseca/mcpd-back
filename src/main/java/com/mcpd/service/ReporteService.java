@@ -18,6 +18,7 @@ public class ReporteService {
 
     public byte[] generarReporte(String nombreReporte, Map<String, Object> parametros) {
         try {
+            parametros.put("REPORT_CLASS_LOADER", Thread.currentThread().getContextClassLoader());
             InputStream jrxmlStream = new ClassPathResource("reportes/" + nombreReporte + ".jrxml").getInputStream();
             JasperReport jasperReport = JasperCompileManager.compileReport(jrxmlStream);
             JasperPrint print = JasperFillManager.fillReport(jasperReport, parametros, new JREmptyDataSource());
@@ -30,6 +31,7 @@ public class ReporteService {
     public byte[] generarReporteConLista(String nombreReporte, Map<String, Object> parametros, java.util.List<?> datos) {
         try {
 
+            parametros.put("REPORT_CLASS_LOADER", Thread.currentThread().getContextClassLoader());
             parametros.putIfAbsent("fecha", LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
             //parametros.putIfAbsent("codigoOperacion", "OP-" + Instant.now().toEpochMilli());
             parametros.putIfAbsent("codigoOperacion", "OP-" + Instant.now().getEpochSecond());

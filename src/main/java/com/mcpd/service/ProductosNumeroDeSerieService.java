@@ -1,19 +1,28 @@
 package com.mcpd.service;
 
+import com.mcpd.dto.ProductosNumeroDeSerieDto;
+import com.mcpd.model.Empleado;
 import com.mcpd.model.ProductosNumeroDeSerie;
+import com.mcpd.repository.EmpleadoRepository;
 import com.mcpd.repository.ProductosNumeroDeSerieRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductosNumeroDeSerieService {
 
     private final ProductosNumeroDeSerieRepository repository;
 
-    public ProductosNumeroDeSerieService(ProductosNumeroDeSerieRepository repository) {
+    private final EmpleadoRepository empleadoRepository;
+
+    public ProductosNumeroDeSerieService(ProductosNumeroDeSerieRepository repository, EmpleadoRepository empleadoRepository) {
         this.repository = repository;
+        this.empleadoRepository = empleadoRepository;
     }
 
     public List<ProductosNumeroDeSerie> findAll() {
@@ -42,5 +51,30 @@ public class ProductosNumeroDeSerieService {
 
     public List<ProductosNumeroDeSerie> saveAll(List<ProductosNumeroDeSerie> lista) {
         return repository.saveAll(lista);
+    }
+
+    public List<ProductosNumeroDeSerie> obtenerNumerosDeSerieActivosSinCustodia(Integer productoStockId) {
+        return repository.findActivosSinCustodiaPorProductoStock(productoStockId);
+    }
+
+    @Transactional
+    public List<ProductosNumeroDeSerieDto> asignarCustodia(List<Integer> ids, Long legajo) {
+
+        List<ProductosNumeroDeSerie> productos = repository.findAllById(ids);
+        Empleado empleado = empleadoRepository.getReferenceById(legajo);
+
+        productos.forEach(p -> {
+
+            p.setEmpleadoCustodia(empleado);
+            repository.save(p);
+        });
+
+        return productos.stream().map(p -> {
+            ProductosNumeroDeSerieDto dto = new ProductosNumeroDeSerieDto();
+            dto.setId(p.getId());
+            dto.setNumeroDeSerie(p.getNumeroDeSerie());
+            dto.setEmpleadoCustodia(p.getEmpleadoCustodia() != null ? p.getEmpleadoCustodia().getLegajo() : null);
+            return dto;
+        }).collect(Collectors.toList());
     }
 }

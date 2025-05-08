@@ -22,4 +22,14 @@ public interface ProductosNumeroDeSerieRepository extends JpaRepository<Producto
             @Param("filtrarActivos") Boolean filtrarActivos,
             @Param("empleadoCustodia") Long empleadoCustodia
     );
+
+    @Query("""
+        SELECT ns FROM ProductosNumeroDeSerie ns
+        WHERE ns.productoFlujo.productoStock.id = :productoStockId
+          AND ns.activo = true
+          AND ns.empleadoCustodia IS NULL
+    """)
+    List<ProductosNumeroDeSerie> findActivosSinCustodiaPorProductoStock(
+            @Param("productoStockId") Integer productoStockId
+    );
 }

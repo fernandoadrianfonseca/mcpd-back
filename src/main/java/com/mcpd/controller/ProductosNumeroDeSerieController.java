@@ -1,5 +1,6 @@
 package com.mcpd.controller;
 
+import com.mcpd.dto.ProductosNumeroDeSerieDto;
 import com.mcpd.model.ProductosNumeroDeSerie;
 import com.mcpd.service.ProductosNumeroDeSerieService;
 import org.springframework.web.bind.annotation.*;
@@ -62,5 +63,17 @@ public class ProductosNumeroDeSerieController extends AbstractCrudController<Pro
     @PostMapping("/lote")
     public List<ProductosNumeroDeSerie> crearEnLote(@RequestBody List<ProductosNumeroDeSerie> lista) {
         return service.saveAll(lista);
+    }
+
+    @GetMapping("/producto-stock/{productoStockId}/sin-custodia")
+    public List<ProductosNumeroDeSerie> getActivosSinCustodiaPorProductoStock(@PathVariable Integer productoStockId) {
+        return service.obtenerNumerosDeSerieActivosSinCustodia(productoStockId);
+    }
+
+    @PutMapping("/asignar-custodia")
+    public List<ProductosNumeroDeSerieDto> asignarCustodia(
+            @RequestBody List<Integer> ids,
+            @RequestParam Long legajo) {
+        return service.asignarCustodia(ids, legajo);
     }
 }

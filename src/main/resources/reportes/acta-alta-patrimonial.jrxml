@@ -59,7 +59,7 @@
 			</line>
 			<image>
 				<reportElement x="371" y="25" width="60" height="65" uuid="5965bc7b-b3ef-485a-85fc-4f9f501ed266"/>
-				<imageExpression><![CDATA["D:/Projects/Mcpd/mcpd-back/src/main/resources/images/escudo_transparente.png"]]></imageExpression>
+				<imageExpression><![CDATA[$P{REPORT_CLASS_LOADER}.getResource("images/escudo_transparente.png").toString()]]></imageExpression>
 			</image>
 		</band>
 	</title>
