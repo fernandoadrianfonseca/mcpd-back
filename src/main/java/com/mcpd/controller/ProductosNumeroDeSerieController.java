@@ -73,7 +73,7 @@ public class ProductosNumeroDeSerieController extends AbstractCrudController<Pro
     @PutMapping("/asignar-custodia")
     public List<ProductosNumeroDeSerieDto> asignarCustodia(
             @RequestBody List<Integer> ids,
-            @RequestParam Long legajo) {
+            @RequestParam(value = "legajo", required = false) Long legajo) {
         return service.asignarCustodia(ids, legajo);
     }
 }

@@ -61,7 +61,7 @@ public class ProductosNumeroDeSerieService {
     public List<ProductosNumeroDeSerieDto> asignarCustodia(List<Integer> ids, Long legajo) {
 
         List<ProductosNumeroDeSerie> productos = repository.findAllById(ids);
-        Empleado empleado = empleadoRepository.getReferenceById(legajo);
+        Empleado empleado = legajo != null ? empleadoRepository.getReferenceById(legajo) : null;
 
         productos.forEach(p -> {
 

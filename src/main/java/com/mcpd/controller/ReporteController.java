@@ -22,10 +22,12 @@ public class ReporteController {
     public ResponseEntity<byte[]> generarReporte(@RequestBody ReporteRequestDto dto) {
         byte[] pdf;
 
+        Integer cantidadCopias = (dto.getCantidadCopias() != null && dto.getCantidadCopias() > 0) ? dto.getCantidadCopias() : 1;
+
         if (dto.getDatos() != null && !dto.getDatos().isEmpty()) {
-            pdf = reporteService.generarReporteConLista(dto.getNombreReporte(), dto.getParametros(), dto.getDatos());
+            pdf = reporteService.generarReporteConLista(dto.getNombreReporte(), dto.getParametros(), dto.getDatos(), cantidadCopias);
         } else {
-            pdf = reporteService.generarReporte(dto.getNombreReporte(), dto.getParametros());
+            pdf = reporteService.generarReporte(dto.getNombreReporte(), dto.getParametros(), cantidadCopias);
         }
 
         return ResponseEntity.ok()

@@ -16,21 +16,26 @@ import java.util.Map;
 @Service
 public class ReporteService {
 
-    public byte[] generarReporte(String nombreReporte, Map<String, Object> parametros) {
+    public byte[] generarReporte(String nombreReporte, Map<String, Object> parametros, Integer cantidadCopias) {
         try {
+            int copias = (cantidadCopias != null && cantidadCopias > 0) ? cantidadCopias : 1;
             parametros.put("REPORT_CLASS_LOADER", Thread.currentThread().getContextClassLoader());
             InputStream jrxmlStream = new ClassPathResource("reportes/" + nombreReporte + ".jrxml").getInputStream();
             JasperReport jasperReport = JasperCompileManager.compileReport(jrxmlStream);
-            JasperPrint print = JasperFillManager.fillReport(jasperReport, parametros, new JREmptyDataSource());
-            return JasperExportManager.exportReportToPdf(print);
+            JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parametros, new JREmptyDataSource());
+            for (int i = 1; i < copias; i++) {
+                jasperPrint.getPages().addAll(jasperPrint.getPages());
+            }
+            return JasperExportManager.exportReportToPdf(jasperPrint);
         } catch (Exception e) {
             throw new RuntimeException("Error al generar reporte: " + e.getMessage(), e);
         }
     }
 
-    public byte[] generarReporteConLista(String nombreReporte, Map<String, Object> parametros, java.util.List<?> datos) {
+    public byte[] generarReporteConLista(String nombreReporte, Map<String, Object> parametros, java.util.List<?> datos, Integer cantidadCopias) {
         try {
 
+            int copias = (cantidadCopias != null && cantidadCopias > 0) ? cantidadCopias : 1;
             parametros.put("REPORT_CLASS_LOADER", Thread.currentThread().getContextClassLoader());
             parametros.putIfAbsent("fecha", LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
             //parametros.putIfAbsent("codigoOperacion", "OP-" + Instant.now().toEpochMilli());
@@ -43,8 +48,11 @@ public class ReporteService {
             InputStream jrxmlStream = new ClassPathResource("reportes/" + nombreReporte + ".jrxml").getInputStream();
             JasperReport jasperReport = JasperCompileManager.compileReport(jrxmlStream);
             JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(duplicados);
-            JasperPrint print = JasperFillManager.fillReport(jasperReport, parametros, dataSource);
-            return JasperExportManager.exportReportToPdf(print);
+            JasperPrint jasperPrint  = JasperFillManager.fillReport(jasperReport, parametros, dataSource);
+            for (int i = 1; i < copias; i++) {
+                jasperPrint.getPages().addAll(jasperPrint.getPages());
+            }
+            return JasperExportManager.exportReportToPdf(jasperPrint );
         } catch (Exception e) {
             throw new RuntimeException("Error al generar reporte con lista: " + e.getMessage(), e);
         }

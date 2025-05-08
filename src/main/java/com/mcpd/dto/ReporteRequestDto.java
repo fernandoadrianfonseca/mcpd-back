@@ -6,6 +6,7 @@ import java.util.Map;
 
 public class ReporteRequestDto {
     private String nombreReporte;
+    private Integer cantidadCopias;
     private Map<String, Object> parametros = new HashMap<>();
     private List<?> datos;
 
@@ -15,6 +16,14 @@ public class ReporteRequestDto {
 
     public void setNombreReporte(String nombreReporte) {
         this.nombreReporte = nombreReporte;
+    }
+
+    public Integer getCantidadCopias() {
+        return cantidadCopias;
+    }
+
+    public void setCantidadCopias(Integer cantidadCopias) {
+        this.cantidadCopias = cantidadCopias;
     }
 
     public Map<String, Object> getParametros() {
