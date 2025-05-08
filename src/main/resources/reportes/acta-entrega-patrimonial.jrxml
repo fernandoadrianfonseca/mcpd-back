@@ -7,6 +7,7 @@
 	<parameter name="legajoEmpleado" class="java.lang.String"/>
 	<parameter name="nombreEmpleadoEntrega" class="java.lang.String"/>
 	<parameter name="legajoEmpleadoEntrega" class="java.lang.String"/>
+	<parameter name="dependenciaAutoriza" class="java.lang.String"/>
 	<field name="cantidad" class="java.lang.Number"/>
 	<field name="descripcion" class="java.lang.String"/>
 	<field name="oc" class="java.lang.String"/>
@@ -132,6 +133,26 @@
 					<font size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{nombreEmpleadoEntrega} + " (" + $P{legajoEmpleadoEntrega} + ")"]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="10" y="62" width="250" height="20" uuid="4787ff88-e66c-4d35-b336-e8efcae0d04a"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Autoriza Dependencia]]></text>
+			</staticText>
+			<line>
+				<reportElement x="10" y="52" width="250" height="1" forecolor="#000000" uuid="b678b693-2dd6-48e0-a84b-554943ad8305"/>
+				<graphicElement>
+					<pen lineStyle="Dotted"/>
+				</graphicElement>
+			</line>
+			<textField>
+				<reportElement x="10" y="82" width="250" height="20" uuid="56977a8b-3e61-4053-801d-675fbd185bd3"/>
+				<textElement textAlignment="Center">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{dependenciaAutoriza} ]]></textFieldExpression>
 			</textField>
 		</band>
 	</summary>
