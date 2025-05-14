@@ -54,19 +54,23 @@ public class ProductosStockController extends AbstractCrudController<ProductosSt
         return productosStockService.getStockActualExcluyendoCustodia(legajoCustodia);
     }
 
-    @GetMapping("disponible-asignar")
+    @GetMapping("/disponible-asignar")
     public List<ProductosStock> getStockDisponibleParaAsignar() {
         return productosStockService.getStockDisponibleParaAsignar();
     }
 
     @PostMapping("/asignar-custodia")
-    public void asignarCustodia(@RequestBody List<CustodiaItem> items, @RequestParam("legajoEmpleado") Long legajoEmpleado) {
-        productosStockService.asignarCustodia(items, legajoEmpleado);
+    public void asignarCustodia(@RequestBody List<CustodiaItem> items,
+                                @RequestParam("legajoCustodia") Long legajoCustodia,
+                                @RequestParam("legajoCarga") Long legajoCarga) {
+        productosStockService.asignarCustodia(items, legajoCustodia, legajoCarga);
     }
 
     @PostMapping("/quitar-custodia")
-    public void quitarCustodia(@RequestBody List<CustodiaItem> items, @RequestParam("legajoEmpleado") Long legajoEmpleado) {
-        productosStockService.quitarCustodia(items, legajoEmpleado);
+    public void quitarCustodia(@RequestBody List<CustodiaItem> items,
+                               @RequestParam("legajoCustodia") Long legajoCustodia,
+                               @RequestParam("legajoCarga") Long legajoCarga) {
+        productosStockService.quitarCustodia(items, legajoCustodia, legajoCarga);
     }
 
     @PostMapping("/transferir-custodia")

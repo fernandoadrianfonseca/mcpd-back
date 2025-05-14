@@ -65,7 +65,7 @@ public class ProductosStockService {
     }
 
     @Transactional
-    public void asignarCustodia(List<CustodiaItem> items, Long legajoEmpleado) {
+    public void asignarCustodia(List<CustodiaItem> items, Long legajoCustodia, Long legajoCarga) {
         for (CustodiaItem item : items) {
             ProductosStock stock = productosStockRepository.findById(item.getStockId())
                     .orElseThrow(() -> new RuntimeException("Stock no encontrado ID: " + item.getStockId()));
@@ -73,7 +73,7 @@ public class ProductosStockService {
             stock.setCantidadCustodia(stock.getCantidadCustodia() + item.getCantidad().intValue());
             productosStockRepository.save(stock);
 
-            ProductosStockFlujo ultimoFlujo = flujoRepository.findUltimoFlujoCustodia(item.getStockId(), legajoEmpleado);
+            ProductosStockFlujo ultimoFlujo = flujoRepository.findUltimoFlujoCustodia(item.getStockId(), legajoCustodia);
             long totalLegajoAnterior = ultimoFlujo != null ? ultimoFlujo.getTotalLegajoCustodia() : 0;
 
             ProductosStockFlujo flujo = new ProductosStockFlujo();
@@ -82,8 +82,8 @@ public class ProductosStockService {
             flujo.setTotal(stock.getCantidad().longValue()); // Stock total
             flujo.setTotalLegajoCustodia(totalLegajoAnterior + item.getCantidad());
             flujo.setTipo("custodia_alta");
-            flujo.setEmpleadoCustodia(legajoEmpleado);
-            flujo.setEmpleadoCarga(legajoEmpleado);
+            flujo.setEmpleadoCustodia(legajoCustodia);
+            flujo.setEmpleadoCarga(legajoCarga);
             flujo.setRemito(null);
             flujo.setOrdenDeCompra(null);
             flujo.setObservaciones(item.getObservaciones());
@@ -92,7 +92,7 @@ public class ProductosStockService {
     }
 
     @Transactional
-    public void quitarCustodia(List<CustodiaItem> items, Long legajoEmpleado) {
+    public void quitarCustodia(List<CustodiaItem> items, Long legajoCustodia, Long legajoCarga) {
         for (CustodiaItem item : items) {
             ProductosStock stock = productosStockRepository.findById(item.getStockId())
                     .orElseThrow(() -> new RuntimeException("Stock no encontrado ID: " + item.getStockId()));
@@ -105,7 +105,7 @@ public class ProductosStockService {
             stock.setCantidadCustodia(nuevaCantidadCustodia);
             productosStockRepository.save(stock);
 
-            ProductosStockFlujo ultimoFlujo = flujoRepository.findUltimoFlujoCustodia(item.getStockId(), legajoEmpleado);
+            ProductosStockFlujo ultimoFlujo = flujoRepository.findUltimoFlujoCustodia(item.getStockId(), legajoCustodia);
             long totalLegajoAnterior = ultimoFlujo != null ? ultimoFlujo.getTotalLegajoCustodia() : 0;
 
             ProductosStockFlujo flujo = new ProductosStockFlujo();
@@ -114,8 +114,8 @@ public class ProductosStockService {
             flujo.setTotal(stock.getCantidad().longValue()); // Stock total
             flujo.setTotalLegajoCustodia(totalLegajoAnterior - item.getCantidad());
             flujo.setTipo("custodia_baja");
-            flujo.setEmpleadoCustodia(legajoEmpleado);
-            flujo.setEmpleadoCarga(legajoEmpleado);
+            flujo.setEmpleadoCustodia(legajoCustodia);
+            flujo.setEmpleadoCarga(legajoCarga);
             flujo.setRemito(null);
             flujo.setOrdenDeCompra(null);
             flujo.setObservaciones(item.getObservaciones());
