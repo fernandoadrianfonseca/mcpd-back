@@ -119,7 +119,7 @@
 				<textElement textAlignment="Center">
 					<font size="12" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Entrega Conforme]]></text>
+				<text><![CDATA[Entrega]]></text>
 			</staticText>
 			<line>
 				<reportElement x="270" y="52" width="250" height="1" forecolor="#000000" uuid="a37d6343-6bb7-4a92-aa8f-c0d7ee839688"/>
@@ -152,7 +152,7 @@
 				<textElement textAlignment="Center">
 					<font size="12"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{dependenciaAutoriza} ]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{dependenciaAutoriza}]]></textFieldExpression>
 			</textField>
 		</band>
 	</summary>

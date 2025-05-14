@@ -5,6 +5,8 @@
 	<parameter name="codigoOperacion" class="java.lang.String"/>
 	<parameter name="nombreEmpleado" class="java.lang.String"/>
 	<parameter name="legajoEmpleado" class="java.lang.String"/>
+	<parameter name="nombreEmpleadoEntrega" class="java.lang.String"/>
+	<parameter name="legajoEmpleadoEntrega" class="java.lang.String"/>
 	<field name="cantidad" class="java.lang.Number"/>
 	<field name="descripcion" class="java.lang.String"/>
 	<field name="oc" class="java.lang.String"/>
@@ -110,6 +112,26 @@
 					<font fontName="Arial" size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA["<style pdfFontName='Helvetica-Bold'>"+"Ordenanza Numero 1306/HCD/91" + "</style>" + ": Para los casos de responsabilidad personal por desaparición, variación o daños de bienes en la delimitación de la misma se tomará como valor, no el que figure en los registros historicos del cargo, sino el de reposicion a la época que se verificó tal circunstancia."]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="250" y="62" width="250" height="20" uuid="fcac086b-3d85-4101-bbde-74004b351e5e"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Entrrega]]></text>
+			</staticText>
+			<line>
+				<reportElement x="250" y="52" width="250" height="1" forecolor="#000000" uuid="9c2b8a0d-cf66-4f96-a2d2-c03d9473fa32"/>
+				<graphicElement>
+					<pen lineStyle="Dotted"/>
+				</graphicElement>
+			</line>
+			<textField>
+				<reportElement x="250" y="82" width="250" height="20" uuid="c04da839-de27-4b33-a06b-bdf4a7d58ae7"/>
+				<textElement textAlignment="Center">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{nombreEmpleadoEntrega} + " (" + $P{legajoEmpleadoEntrega} + ")"]]></textFieldExpression>
 			</textField>
 		</band>
 	</summary>

@@ -70,8 +70,13 @@ public class ProductosStockService {
             ProductosStock stock = productosStockRepository.findById(item.getStockId())
                     .orElseThrow(() -> new RuntimeException("Stock no encontrado ID: " + item.getStockId()));
 
-            stock.setCantidadCustodia(stock.getCantidadCustodia() + item.getCantidad().intValue());
-            productosStockRepository.save(stock);
+            if(!stock.getConsumible()){
+                stock.setCantidadCustodia(stock.getCantidadCustodia() + item.getCantidad().intValue());
+                productosStockRepository.save(stock);
+            }
+            else{
+                stock.setCantidad(stock.getCantidad() - item.getCantidad().intValue());
+            }
 
             ProductosStockFlujo ultimoFlujo = flujoRepository.findUltimoFlujoCustodia(item.getStockId(), legajoCustodia);
             long totalLegajoAnterior = ultimoFlujo != null ? ultimoFlujo.getTotalLegajoCustodia() : 0;
@@ -126,17 +131,9 @@ public class ProductosStockService {
     @Transactional
     public void transferirCustodia(List<CustodiaItem> items, Long legajoOrigen, Long legajoDestino, Long legajoCarga) {
         for (CustodiaItem item : items) {
+
             ProductosStock stock = productosStockRepository.findById(item.getStockId())
                     .orElseThrow(() -> new RuntimeException("Stock no encontrado ID: " + item.getStockId()));
-
-            int nuevaCantidadCustodia = stock.getCantidadCustodia() - item.getCantidad().intValue();
-            if (nuevaCantidadCustodia < 0) {
-                throw new RuntimeException("No hay suficiente cantidad en custodia para transferir del stock ID: " + item.getStockId());
-            }
-
-            // Baja en legajo origen
-            stock.setCantidadCustodia(nuevaCantidadCustodia);
-            productosStockRepository.save(stock);
 
             ProductosStockFlujo ultimoFlujoOrigen = flujoRepository.findUltimoFlujoCustodia(item.getStockId(), legajoOrigen);
             long totalOrigenAnterior = ultimoFlujoOrigen != null ? ultimoFlujoOrigen.getTotalLegajoCustodia() : 0;
