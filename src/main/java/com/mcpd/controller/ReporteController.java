@@ -25,9 +25,18 @@ public class ReporteController {
         Integer cantidadCopias = (dto.getCantidadCopias() != null && dto.getCantidadCopias() > 0) ? dto.getCantidadCopias() : 1;
 
         if (dto.getDatos() != null && !dto.getDatos().isEmpty()) {
-            pdf = reporteService.generarReporteConLista(dto.getNombreReporte(), dto.getParametros(), dto.getDatos(), cantidadCopias);
+            pdf = reporteService.generarReporteConLista(dto.getNombreReporte(),
+                                                        dto.getGeneraReporteLegajo(),
+                                                        dto.getGeneraReporteNombre(),
+                                                        dto.getParametros(),
+                                                        dto.getDatos(),
+                                                        cantidadCopias);
         } else {
-            pdf = reporteService.generarReporte(dto.getNombreReporte(), dto.getParametros(), cantidadCopias);
+            pdf = reporteService.generarReporte(dto.getNombreReporte(),
+                                                dto.getGeneraReporteLegajo(),
+                                                dto.getGeneraReporteNombre(),
+                                                dto.getParametros(),
+                                                cantidadCopias);
         }
 
         return ResponseEntity.ok()

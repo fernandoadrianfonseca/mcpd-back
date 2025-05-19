@@ -96,3 +96,13 @@ CREATE TABLE productos_numeros_de_serie (
     CONSTRAINT FK_NumeroSerie_Custodia FOREIGN KEY (empleado_custodia)
         REFERENCES rrhhempleado(legajo)
 );
+
+CREATE TABLE reportes_log (
+   id BIGINT IDENTITY(1,1) PRIMARY KEY,
+   id_reporte NVARCHAR(255) NOT NULL,
+   reporte_nombre NVARCHAR(255) NOT NULL,
+   reporte_usuario BIGINT NOT NULL,
+   reporte_usuario_nombre NVARCHAR(255) NOT NULL,
+   reporte_fecha DATETIME NOT NULL DEFAULT GETDATE(),
+   reporte_datos NVARCHAR(MAX) NOT NULL
+);

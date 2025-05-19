@@ -6,6 +6,8 @@ import java.util.Map;
 
 public class ReporteRequestDto {
     private String nombreReporte;
+    private String generaReporteLegajo;
+    private String generaReporteNombre;
     private Integer cantidadCopias;
     private Map<String, Object> parametros = new HashMap<>();
     private List<?> datos;
@@ -16,6 +18,22 @@ public class ReporteRequestDto {
 
     public void setNombreReporte(String nombreReporte) {
         this.nombreReporte = nombreReporte;
+    }
+
+    public String getGeneraReporteLegajo() {
+        return generaReporteLegajo;
+    }
+
+    public void setGeneraReporteLegajo(String generaReporteLegajo) {
+        this.generaReporteLegajo = generaReporteLegajo;
+    }
+
+    public String getGeneraReporteNombre() {
+        return generaReporteNombre;
+    }
+
+    public void setGeneraReporteNombre(String generaReporteNombre) {
+        this.generaReporteNombre = generaReporteNombre;
     }
 
     public Integer getCantidadCopias() {
