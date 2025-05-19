@@ -106,3 +106,6 @@ CREATE TABLE reportes_log (
    reporte_fecha DATETIME NOT NULL DEFAULT GETDATE(),
    reporte_datos NVARCHAR(MAX) NOT NULL
 );
+
+ALTER TABLE seguridadOperadorLog
+ALTER COLUMN movimiento NVARCHAR(MAX) NOT NULL;

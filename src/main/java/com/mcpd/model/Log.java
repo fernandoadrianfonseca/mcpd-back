@@ -5,7 +5,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 @Entity
-@Table(name = "seguridadOperadorLog")
+@Table(name = "seguridadoperadorlog")
 public class Log implements Serializable {
 
     @Id
@@ -22,6 +22,11 @@ public class Log implements Serializable {
 
     @Column(name = "movimiento", nullable = false, length = 254)
     private String movimiento;
+
+    @PrePersist
+    protected void onCreate() {
+        this.fecha = new Date();
+    }
 
     // ✅ Getters y Setters
     public Long getId() {

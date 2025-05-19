@@ -90,6 +90,12 @@
             </exclusions>
         </dependency>
 
+        <!-- LOGS -->
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+        </dependency>
+
         <!-- DEVELOPING -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
