@@ -3,6 +3,7 @@ package com.mcpd.service;
 import com.mcpd.model.ReportesLog;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
@@ -14,9 +15,16 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 @Service
 public class ReporteService {
+
+    @Value("${reports.savefiles:false}")
+    private boolean guardarArchivos;
 
     private final ReportesLogService reportesLogService;
 
@@ -43,7 +51,9 @@ public class ReporteService {
             for (int i = 1; i < copias; i++) {
                 jasperPrint.getPages().addAll(jasperPrint.getPages());
             }
-            return JasperExportManager.exportReportToPdf(jasperPrint);
+            byte[] pdfBytes = JasperExportManager.exportReportToPdf(jasperPrint);
+            guardarArchivoEnDisco(nombreReporte, codigoOperacion, pdfBytes);
+            return pdfBytes;
         } catch (Exception e) {
             throw new RuntimeException("Error al generar reporte: " + e.getMessage(), e);
         }
@@ -77,9 +87,33 @@ public class ReporteService {
             for (int i = 1; i < copias; i++) {
                 jasperPrint.getPages().addAll(jasperPrint.getPages());
             }
-            return JasperExportManager.exportReportToPdf(jasperPrint );
+            byte[] pdfBytes = JasperExportManager.exportReportToPdf(jasperPrint);
+            guardarArchivoEnDisco(nombreReporte, codigoOperacion, pdfBytes);
+            return pdfBytes;
         } catch (Exception e) {
             throw new RuntimeException("Error al generar reporte con lista: " + e.getMessage(), e);
+        }
+    }
+
+    private void guardarArchivoEnDisco(String nombreReporte, String codigoOperacion, byte[] pdfBytes) {
+        if (!guardarArchivos) return;
+
+        try {
+            String fechaActual = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            String nombreArchivo = nombreReporte + "-" + codigoOperacion + ".pdf";
+            String rutaCarpeta = "src/main/resources/reportes/generados/" + fechaActual;
+            File carpeta = new File(rutaCarpeta);
+            if (!carpeta.exists()) {
+                carpeta.mkdirs();
+            }
+
+            File archivo = new File(carpeta, nombreArchivo);
+            try (FileOutputStream fos = new FileOutputStream(archivo)) {
+                fos.write(pdfBytes);
+            }
+        } catch (Exception e) {
+            System.err.println("Error al guardar el archivo del reporte: " + e.getMessage());
+            // Si querés, podés también loguearlo con Logger
         }
     }
 
