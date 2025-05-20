@@ -27,3 +27,4 @@ node_modules/
 .mvn/
 target/
 *.iml
+/logs
