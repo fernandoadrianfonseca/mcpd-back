@@ -2,6 +2,7 @@ package com.mcpd.controller;
 
 import com.mcpd.model.ProductosStockFlujo;
 import com.mcpd.service.ProductosStockFlujoService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -10,7 +11,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/stock-flujo")
 @CrossOrigin(origins = "*")
-public class ProductosStockFlujoController extends AbstractCrudController<ProductosStockFlujo> {
+public class ProductosStockFlujoController {
 
     private final ProductosStockFlujoService service;
 
@@ -18,29 +19,41 @@ public class ProductosStockFlujoController extends AbstractCrudController<Produc
         this.service = service;
     }
 
-    @Override
-    protected List<ProductosStockFlujo> getAllEntities() {
+    @GetMapping
+    public List<ProductosStockFlujo> getAll() {
         return service.findAll();
     }
 
-    @Override
-    protected Optional<ProductosStockFlujo> getEntityById(Integer id) {
-        return service.findById(id);
+    @GetMapping("/{id}")
+    public ResponseEntity<ProductosStockFlujo> getById(@PathVariable Integer id) {
+        return service.findById(id)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @Override
-    protected ProductosStockFlujo createOrUpdateEntity(ProductosStockFlujo entity) {
+    @PostMapping
+    public ProductosStockFlujo create(@RequestBody ProductosStockFlujo entity) {
         return service.save(entity);
     }
 
-    @Override
-    protected void deleteEntity(Integer id) {
-        service.deleteById(id);
+    @PutMapping("/{id}")
+    public ResponseEntity<ProductosStockFlujo> update(@PathVariable Integer id, @RequestBody ProductosStockFlujo entity) {
+        Optional<ProductosStockFlujo> existing = service.findById(id);
+        if (existing.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        entity.setId(id);
+        return ResponseEntity.ok(service.save(entity));
     }
 
-    @Override
-    protected void setEntityId(ProductosStockFlujo entity, Integer id) {
-        entity.setId(id);
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Integer id) {
+        Optional<ProductosStockFlujo> existing = service.findById(id);
+        if (existing.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        service.deleteById(id);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/producto-stock/{id}")

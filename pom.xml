@@ -96,6 +96,12 @@
             <artifactId>logback-classic</artifactId>
         </dependency>
 
+        <!-- AOP para logging de controladores -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-aop</artifactId>
+        </dependency>
+
         <!-- DEVELOPING -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

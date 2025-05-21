@@ -3,6 +3,7 @@ package com.mcpd.controller;
 import com.mcpd.dto.CustodiaItem;
 import com.mcpd.model.ProductosStock;
 import com.mcpd.service.ProductosStockService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -11,7 +12,7 @@ import java.util.Optional;
 @CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/stock")
-public class ProductosStockController extends AbstractCrudController<ProductosStock> {
+public class ProductosStockController {
 
     private final ProductosStockService productosStockService;
 
@@ -19,29 +20,41 @@ public class ProductosStockController extends AbstractCrudController<ProductosSt
         this.productosStockService = productosStockService;
     }
 
-    @Override
-    protected List<ProductosStock> getAllEntities() {
+    @GetMapping
+    public List<ProductosStock> getAll() {
         return productosStockService.getAll();
     }
 
-    @Override
-    protected Optional<ProductosStock> getEntityById(Integer id) {
-        return productosStockService.getById(id);
+    @GetMapping("/{id}")
+    public ResponseEntity<ProductosStock> getById(@PathVariable Integer id) {
+        return productosStockService.getById(id)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @Override
-    protected ProductosStock createOrUpdateEntity(ProductosStock entity) {
+    @PostMapping
+    public ProductosStock create(@RequestBody ProductosStock entity) {
         return productosStockService.save(entity);
     }
 
-    @Override
-    protected void deleteEntity(Integer id) {
-        productosStockService.delete(id);
+    @PutMapping("/{id}")
+    public ResponseEntity<ProductosStock> update(@PathVariable Integer id, @RequestBody ProductosStock entity) {
+        Optional<ProductosStock> existing = productosStockService.getById(id);
+        if (existing.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        entity.setId(id);
+        return ResponseEntity.ok(productosStockService.save(entity));
     }
 
-    @Override
-    protected void setEntityId(ProductosStock entity, Integer id) {
-        entity.setId(id);
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Integer id) {
+        Optional<ProductosStock> existing = productosStockService.getById(id);
+        if (existing.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        productosStockService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/custodia/{legajoCustodia}")

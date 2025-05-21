@@ -3,6 +3,7 @@ package com.mcpd.controller;
 import com.mcpd.dto.ProductosNumeroDeSerieDto;
 import com.mcpd.model.ProductosNumeroDeSerie;
 import com.mcpd.service.ProductosNumeroDeSerieService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -11,7 +12,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/numeros-de-serie")
 @CrossOrigin(origins = "*")
-public class ProductosNumeroDeSerieController extends AbstractCrudController<ProductosNumeroDeSerie> {
+public class ProductosNumeroDeSerieController {
 
     private final ProductosNumeroDeSerieService service;
 
@@ -19,29 +20,41 @@ public class ProductosNumeroDeSerieController extends AbstractCrudController<Pro
         this.service = service;
     }
 
-    @Override
-    protected List<ProductosNumeroDeSerie> getAllEntities() {
+    @GetMapping
+    public List<ProductosNumeroDeSerie> getAll() {
         return service.findAll();
     }
 
-    @Override
-    protected Optional<ProductosNumeroDeSerie> getEntityById(Integer id) {
-        return service.findById(id);
+    @GetMapping("/{id}")
+    public ResponseEntity<ProductosNumeroDeSerie> getById(@PathVariable Integer id) {
+        return service.findById(id)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @Override
-    protected ProductosNumeroDeSerie createOrUpdateEntity(ProductosNumeroDeSerie entity) {
+    @PostMapping
+    public ProductosNumeroDeSerie create(@RequestBody ProductosNumeroDeSerie entity) {
         return service.save(entity);
     }
 
-    @Override
-    protected void deleteEntity(Integer id) {
-        service.deleteById(id);
+    @PutMapping("/{id}")
+    public ResponseEntity<ProductosNumeroDeSerie> update(@PathVariable Integer id, @RequestBody ProductosNumeroDeSerie entity) {
+        Optional<ProductosNumeroDeSerie> existing = service.findById(id);
+        if (existing.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        entity.setId(id);
+        return ResponseEntity.ok(service.save(entity));
     }
 
-    @Override
-    protected void setEntityId(ProductosNumeroDeSerie entity, Integer id) {
-        entity.setId(id);
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Integer id) {
+        Optional<ProductosNumeroDeSerie> existing = service.findById(id);
+        if (existing.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        service.deleteById(id);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/flujo/{id}")
@@ -55,9 +68,11 @@ public class ProductosNumeroDeSerieController extends AbstractCrudController<Pro
             @RequestParam(required = false) Boolean activo,
             @RequestParam(required = false) Long empleadoCustodia) {
 
-        return service.findByProductoStockId(productoStockId,
+        return service.findByProductoStockId(
+                productoStockId,
                 activo != null ? activo : true,
-                empleadoCustodia);
+                empleadoCustodia
+        );
     }
 
     @PostMapping("/lote")

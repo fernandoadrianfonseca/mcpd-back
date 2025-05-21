@@ -2,6 +2,7 @@ package com.mcpd.controller;
 
 import com.mcpd.model.Producto;
 import com.mcpd.service.ProductoService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -10,7 +11,7 @@ import java.util.Optional;
 @CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/productos")
-public class ProductoController extends AbstractCrudController<Producto> {
+public class ProductoController {
 
     private final ProductoService service;
 
@@ -18,29 +19,40 @@ public class ProductoController extends AbstractCrudController<Producto> {
         this.service = service;
     }
 
-    @Override
-    protected List<Producto> getAllEntities() {
-        List<Producto> list=service.getAll();
-        return list;
+    @GetMapping
+    public List<Producto> getAll() {
+        return service.getAll();
     }
 
-    @Override
-    protected Optional<Producto> getEntityById(Integer id) {
-        return service.getById(id);
+    @GetMapping("/{id}")
+    public ResponseEntity<Producto> getById(@PathVariable Integer id) {
+        return service.getById(id)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @Override
-    protected Producto createOrUpdateEntity(Producto entity) {
+    @PostMapping
+    public Producto create(@RequestBody Producto entity) {
         return service.save(entity);
     }
 
-    @Override
-    protected void deleteEntity(Integer id) {
-        service.delete(id);
+    @PutMapping("/{id}")
+    public ResponseEntity<Producto> update(@PathVariable Integer id, @RequestBody Producto entity) {
+        Optional<Producto> existing = service.getById(id);
+        if (existing.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        entity.setId(id);
+        return ResponseEntity.ok(service.save(entity));
     }
 
-    @Override
-    protected void setEntityId(Producto entity, Integer id) {
-        entity.setId(id);
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Integer id) {
+        Optional<Producto> existing = service.getById(id);
+        if (existing.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        service.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }
