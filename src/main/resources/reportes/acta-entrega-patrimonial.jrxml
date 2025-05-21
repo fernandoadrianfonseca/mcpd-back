@@ -55,7 +55,7 @@
 				<textElement textAlignment="Center">
 					<font size="18" isBold="true"/>
 				</textElement>
-				<text><![CDATA[ORDEN DE ENTREGA PATRIMONIAL]]></text>
+				<text><![CDATA[ORDEN DE ENTREGA]]></text>
 			</staticText>
 			<line>
 				<reportElement x="0" y="215" width="802" height="1" uuid="b905bee2-eedb-4296-a106-cd8f0418ac64"/>

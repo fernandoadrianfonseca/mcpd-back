@@ -8,6 +8,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
 import java.io.InputStream;
+import java.nio.file.Paths;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -17,14 +18,18 @@ import java.util.List;
 import java.util.Map;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
 
 @Service
 public class ReporteService {
 
     @Value("${reports.savefiles:false}")
     private boolean guardarArchivos;
+
+    @Value("${reports.isproduction:false}")
+    private boolean esProduccion;
+
+    @Value("${reports.output-directory:}")
+    private String rutaProduccion;
 
     private final ReportesLogService reportesLogService;
 
@@ -101,7 +106,16 @@ public class ReporteService {
         try {
             String fechaActual = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
             String nombreArchivo = nombreReporte + "-" + codigoOperacion + ".pdf";
-            String rutaCarpeta = "src/main/resources/reportes/generados/" + fechaActual;
+            String rutaCarpeta;
+
+            if (esProduccion) {
+                // Producción: usa ruta externa configurada
+                rutaCarpeta = Paths.get(rutaProduccion, fechaActual).toString();
+            } else {
+                // Desarrollo: usa carpeta dentro de resources
+                rutaCarpeta = Paths.get("src/main/resources/reportes/generados", fechaActual).toString();
+            }
+
             File carpeta = new File(rutaCarpeta);
             if (!carpeta.exists()) {
                 carpeta.mkdirs();
@@ -113,7 +127,6 @@ public class ReporteService {
             }
         } catch (Exception e) {
             System.err.println("Error al guardar el archivo del reporte: " + e.getMessage());
-            // Si querés, podés también loguearlo con Logger
         }
     }
 
