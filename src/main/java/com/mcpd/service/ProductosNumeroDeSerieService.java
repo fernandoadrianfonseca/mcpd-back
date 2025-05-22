@@ -77,4 +77,13 @@ public class ProductosNumeroDeSerieService {
             return dto;
         }).collect(Collectors.toList());
     }
+
+    @Transactional
+    public List<ProductosNumeroDeSerie> darDeBajaNumerosDeSerie(List<Integer> ids) {
+        List<ProductosNumeroDeSerie> series = repository.findAllById(ids);
+        for (ProductosNumeroDeSerie serie : series) {
+            serie.setActivo(false);
+        }
+        return repository.saveAll(series);
+    }
 }

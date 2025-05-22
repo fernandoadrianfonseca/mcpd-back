@@ -2,6 +2,8 @@ package com.mcpd.model;
 
 import jakarta.persistence.*;
 
+import java.util.Date;
+
 @Entity
 @Table(name = "productos_numeros_de_serie")
 public class ProductosNumeroDeSerie {
@@ -23,6 +25,20 @@ public class ProductosNumeroDeSerie {
 
     @Column(nullable = false)
     private Boolean activo = true;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(nullable = false)
+    private Date updated;
+
+    @PrePersist
+    protected void onCreate() {
+        updated = new Date();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updated = new Date();
+    }
 
     // Getters y setters
     public Integer getId() { return id; }
@@ -48,5 +64,13 @@ public class ProductosNumeroDeSerie {
 
     public void setActivo(Boolean activo) {
         this.activo = activo;
+    }
+
+    public Date getUpdated() {
+        return updated;
+    }
+
+    public void setUpdated(Date updated) {
+        this.updated = updated;
     }
 }

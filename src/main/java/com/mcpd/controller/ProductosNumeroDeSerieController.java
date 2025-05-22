@@ -4,6 +4,7 @@ import com.mcpd.dto.ProductosNumeroDeSerieDto;
 import com.mcpd.model.ProductosNumeroDeSerie;
 import com.mcpd.service.ProductosNumeroDeSerieService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -90,5 +91,10 @@ public class ProductosNumeroDeSerieController {
             @RequestBody List<Integer> ids,
             @RequestParam(value = "legajo", required = false) Long legajo) {
         return service.asignarCustodia(ids, legajo);
+    }
+
+    @PutMapping("/darDeBaja")
+    public List<ProductosNumeroDeSerie> darDeBajaNumerosDeSerie(@RequestBody List<Integer> ids) {
+        return service.darDeBajaNumerosDeSerie(ids);
     }
 }

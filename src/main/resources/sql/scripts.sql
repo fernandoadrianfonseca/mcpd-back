@@ -88,7 +88,8 @@ CREATE TABLE productos_numeros_de_serie (
     id_producto_flujo INT NOT NULL,
     numero_de_serie NVARCHAR(255) NOT NULL,
     empleado_custodia BIGINT,
-    activo BIT NOT NULL DEFAULT 1
+    activo BIT NOT NULL DEFAULT 1,
+    updated DATETIME NOT NULL
 
     CONSTRAINT FK_NumeroSerie_ProductoFlujo FOREIGN KEY (id_producto_flujo)
         REFERENCES productos_stock_flujo(id),
