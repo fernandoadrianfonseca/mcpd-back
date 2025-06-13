@@ -110,3 +110,9 @@ CREATE TABLE reportes_log (
 
 ALTER TABLE seguridadOperadorLog
 ALTER COLUMN movimiento NVARCHAR(MAX) NOT NULL;
+
+ALTER TABLE dbo.productos_stock
+    ADD con_devolucion BIT NOT NULL DEFAULT 0;
+
+ALTER TABLE dbo.productos_stock_flujo
+    ADD fecha_devolucion DATETIME NULL;

@@ -53,6 +53,10 @@ public class ProductosStockFlujo {
     @Column(nullable = false)
     private Date fecha;
 
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "fecha_devolucion")
+    private Date fechaDevolucion;
+
     @PrePersist
     protected void onCreate() {
         fecha = new Date();
@@ -119,4 +123,12 @@ public class ProductosStockFlujo {
     public Date getFecha() { return fecha; }
 
     public void setFecha(Date fecha) { this.fecha = fecha; }
+
+    public Date getFechaDevolucion() {
+        return fechaDevolucion;
+    }
+
+    public void setFechaDevolucion(Date fechaDevolucion) {
+        this.fechaDevolucion = fechaDevolucion;
+    }
 }

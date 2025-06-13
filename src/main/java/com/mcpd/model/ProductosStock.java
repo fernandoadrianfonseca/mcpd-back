@@ -49,6 +49,9 @@ public class ProductosStock {
     @Column(nullable = false)
     private Boolean consumible;
 
+    @Column(name = "con_devolucion", nullable = false)
+    private Boolean conDevolucion;
+
     @PrePersist
     protected void onCreate() {
         fechaDeCarga = new Date();
@@ -162,5 +165,13 @@ public class ProductosStock {
 
     public void setConsumible(Boolean consumible) {
         this.consumible = consumible;
+    }
+
+    public Boolean getConDevolucion() {
+        return conDevolucion;
+    }
+
+    public void setConDevolucion(Boolean conDevolucion) {
+        this.conDevolucion = conDevolucion;
     }
 }

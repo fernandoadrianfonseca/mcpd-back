@@ -1,5 +1,6 @@
 package com.mcpd.controller;
 
+import com.mcpd.dto.PrestamoPendienteDto;
 import com.mcpd.model.ProductosStockFlujo;
 import com.mcpd.service.ProductosStockFlujoService;
 import org.springframework.http.ResponseEntity;
@@ -76,5 +77,10 @@ public class ProductosStockFlujoController {
             @PathVariable Integer id,
             @RequestParam(required = false) Long legajoCustodia) {
         return service.findFlujosAltasYBajasByProductoStockId(id, legajoCustodia);
+    }
+
+    @GetMapping("/pendientes-devolucion")
+    public List<PrestamoPendienteDto> getPrestamosPendientesPorLegajo(@RequestParam Long legajo) {
+        return service.getPrestamosPendientesPorLegajo(legajo);
     }
 }

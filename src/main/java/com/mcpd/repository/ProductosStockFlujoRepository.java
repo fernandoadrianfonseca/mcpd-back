@@ -1,5 +1,6 @@
 package com.mcpd.repository;
 
+import com.mcpd.dto.PrestamoPendienteDto;
 import com.mcpd.model.ProductosStock;
 import com.mcpd.model.ProductosStockFlujo;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -55,4 +56,31 @@ public interface ProductosStockFlujoRepository extends JpaRepository<ProductosSt
     """)
     ProductosStockFlujo findUltimoFlujoCustodia(@Param("productoStockId") Integer productoStockId, @Param("empleadoCustodia") Long empleadoCustodia);
 
+    @Query("""
+        SELECT f
+        FROM ProductosStockFlujo f
+        WHERE f.tipo = 'custodia_alta'
+          AND f.empleadoCustodia = :legajo
+          AND f.fechaDevolucion IS NOT NULL
+          AND (
+            SELECT COALESCE(SUM(b.cantidad), 0)
+            FROM ProductosStockFlujo b
+            WHERE b.tipo = 'custodia_baja'
+              AND b.empleadoCustodia = f.empleadoCustodia
+              AND b.productoStock = f.productoStock
+              AND b.fecha > f.fecha
+          ) < f.cantidad
+        ORDER BY f.fecha
+    """)
+    List<ProductosStockFlujo> findPrestamosPendientesDeDevolucionPorLegajo(@Param("legajo") Long legajo);
+
+    @Query("""
+        SELECT f
+        FROM ProductosStockFlujo f
+        WHERE f.tipo IN ('custodia_alta', 'custodia_baja')
+          AND f.empleadoCustodia = :legajo
+          AND (f.tipo != 'custodia_alta' OR f.fechaDevolucion IS NOT NULL)
+        ORDER BY f.productoStock.id, f.fecha
+    """)
+    List<ProductosStockFlujo> findFlujoDeStockConFechaDevolucionPorLegajo(@Param("legajo") Long legajo);
 }

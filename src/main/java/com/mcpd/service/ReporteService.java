@@ -1,19 +1,25 @@
 package com.mcpd.service;
 
+import com.mcpd.config.ControllerLoggingAspect;
 import com.mcpd.model.ReportesLog;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
 import java.io.InputStream;
 import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.io.File;
@@ -32,6 +38,7 @@ public class ReporteService {
     private String rutaProduccion;
 
     private final ReportesLogService reportesLogService;
+    private static final Logger logger = LoggerFactory.getLogger(ReporteService.class);
 
     public ReporteService(ReportesLogService reportesLogService) {
         this.reportesLogService = reportesLogService;
@@ -46,6 +53,13 @@ public class ReporteService {
             int copias = (cantidadCopias != null && cantidadCopias > 0) ? cantidadCopias : 1;
             parametros.put("REPORT_CLASS_LOADER", Thread.currentThread().getContextClassLoader());
             parametros.putIfAbsent("fecha", LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+            String fechaDevolucionString = (String) parametros.get("fechaDevolucion");
+            if (parametros.get("fechaDevolucion") != null) {
+                Instant instant = Instant.parse(fechaDevolucionString);
+                LocalDate fecha = instant.atZone(ZoneId.of("America/Argentina/Buenos_Aires")).toLocalDate();
+                String formateada = fecha.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+                parametros.put("fechaDevolucion", formateada);
+            }
             //parametros.putIfAbsent("codigoOperacion", "OP-" + Instant.now().toEpochMilli());
             String codigoOperacion = "OP-" + Instant.now().getEpochSecond();
             parametros.putIfAbsent("codigoOperacion", codigoOperacion);
@@ -60,6 +74,7 @@ public class ReporteService {
             guardarArchivoEnDisco(nombreReporte, codigoOperacion, pdfBytes);
             return pdfBytes;
         } catch (Exception e) {
+            logger.error("Error al generar reporte: " + e.getMessage(), e);
             throw new RuntimeException("Error al generar reporte: " + e.getMessage(), e);
         }
     }
@@ -75,6 +90,13 @@ public class ReporteService {
             int copias = (cantidadCopias != null && cantidadCopias > 0) ? cantidadCopias : 1;
             parametros.put("REPORT_CLASS_LOADER", Thread.currentThread().getContextClassLoader());
             parametros.putIfAbsent("fecha", LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+            String fechaDevolucionString = (String) parametros.get("fechaDevolucion");
+            if (parametros.get("fechaDevolucion") != null) {
+                Instant instant = Instant.parse(fechaDevolucionString);
+                LocalDate fecha = instant.atZone(ZoneId.of("America/Argentina/Buenos_Aires")).toLocalDate();
+                String formateada = fecha.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+                parametros.put("fechaDevolucion", formateada);
+            }
             //parametros.putIfAbsent("codigoOperacion", "OP-" + Instant.now().toEpochMilli());
             String codigoOperacion = "OP-" + Instant.now().getEpochSecond();
             parametros.putIfAbsent("codigoOperacion", codigoOperacion);
@@ -96,6 +118,7 @@ public class ReporteService {
             guardarArchivoEnDisco(nombreReporte, codigoOperacion, pdfBytes);
             return pdfBytes;
         } catch (Exception e) {
+            logger.error("Error al generar reporte: " + e.getMessage(), e);
             throw new RuntimeException("Error al generar reporte con lista: " + e.getMessage(), e);
         }
     }

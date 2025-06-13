@@ -1,9 +1,12 @@
 package com.mcpd.dto;
 
+import java.util.Date;
+
 public class CustodiaItem {
     private Integer stockId;
     private Long cantidad;
     private String observaciones;
+    private Date fechaDevolucion;
 
     // getters y setters
     public Integer getStockId() { return stockId; }
@@ -18,5 +21,13 @@ public class CustodiaItem {
 
     public void setObservaciones(String observaciones) {
         this.observaciones = observaciones;
+    }
+
+    public Date getFechaDevolucion() {
+        return fechaDevolucion;
+    }
+
+    public void setFechaDevolucion(Date fechaDevolucion) {
+        this.fechaDevolucion = fechaDevolucion;
     }
 }

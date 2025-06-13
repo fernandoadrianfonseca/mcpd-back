@@ -92,6 +92,9 @@ public class ProductosStockService {
             flujo.setRemito(null);
             flujo.setOrdenDeCompra(null);
             flujo.setObservaciones(item.getObservaciones());
+            if(stock.getConDevolucion()){
+                flujo.setFechaDevolucion(item.getFechaDevolucion());
+            }
             flujoRepository.save(flujo);
         }
     }
