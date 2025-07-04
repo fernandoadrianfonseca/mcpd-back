@@ -36,6 +36,8 @@ public class AuthRepository {
                 usuarioDto.setNombre((String) result[0]);
                 usuarioDto.setPerfil((Integer) result[1]);
                 usuarioDto.setDependencia((String) result[2]);
+                usuarioDto.setSecretaria((String) result[6]);
+                usuarioDto.setAdministracion((String) result[7]);
 
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
                 usuarioDto.setVence(result[3] != null ? dateFormat.format((Date) result[3]) : null);

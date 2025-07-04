@@ -7,6 +7,9 @@ public class UsuarioDto {
     private String vence;
     private int modulo;
     private long legajo;
+    private String secretaria;
+    private String administracion;
+
 
     // Getters y Setters
     public String getNombre() {
@@ -55,5 +58,21 @@ public class UsuarioDto {
 
     public void setLegajo(long legajo) {
         this.legajo = legajo;
+    }
+
+    public String getSecretaria() {
+        return secretaria;
+    }
+
+    public void setSecretaria(String secretaria) {
+        this.secretaria = secretaria;
+    }
+
+    public String getAdministracion() {
+        return administracion;
+    }
+
+    public void setAdministracion(String administracion) {
+        this.administracion = administracion;
     }
 }

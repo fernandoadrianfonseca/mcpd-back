@@ -116,3 +116,20 @@ ALTER TABLE dbo.productos_stock
 
 ALTER TABLE dbo.productos_stock_flujo
     ADD fecha_devolucion DATETIME NULL;
+
+ALTER TABLE comprasAdquisicionPedido
+    ADD legajoSolicitante BIGINT NOT NULL DEFAULT 0,
+    haciendaEmpleado NVARCHAR(100),
+    haciendaLegajoEmpleado BIGINT,
+    pañolEmpleado NVARCHAR(100),
+    pañolLegajoEmpleado BIGINT,
+    adquisicion BIT NOT NULL DEFAULT 1,
+    nuevoSistema BIT NOT NULL DEFAULT 0,
+    [updated] DATETIME NULL;
+
+ALTER TABLE comprasAdquisicionPedidoDetalle
+    ADD productoStockId INT;
+
+ALTER TABLE comprasAdquisicionPedidoDetalle
+    ADD CONSTRAINT FK_pedidoDetalle_ProductosStock
+        FOREIGN KEY (productoStockId) REFERENCES productos_stock(id);

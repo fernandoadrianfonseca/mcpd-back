@@ -1,56 +1,62 @@
 package com.mcpd.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-
 import java.io.Serializable;
 
 @Entity
-@Table(name = "comprasAdquisicionPedidoDetalle")
+@Table(name = "comprasadquisicionpedidodetalle")
 public class PedidoDeAdquisicionDetalle implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "comprasAdquisicionPedido", nullable = false)
+    @JoinColumn(name = "comprasadquisicionpedido", nullable = false)
+    @JsonBackReference
     private PedidoDeAdquisicion pedido;
 
-    @Column(nullable = false)
+    @Column(name = "cantidad", nullable = false)
     private double cantidad;
 
-    @Column(nullable = false, length = 50, columnDefinition = "nvarchar(50) default '0'")
+    @Column(name = "codigo", nullable = false, length = 50, columnDefinition = "nvarchar(50) default '0'")
     private String codigo;
 
-    @Column(nullable = false, length = 255)
+    @Column(name = "detalle", nullable = false, length = 255)
     private String detalle;
 
-    @Column(nullable = false)
+    @Column(name = "montounitario", nullable = false)
     private double montoUnitario;
 
-    @Column(length = 255)
+    @Column(name = "observaciones", length = 255)
     private String observaciones;
 
-    @Column(nullable = false, columnDefinition = "nvarchar(max)")
+    @Column(name = "rubro", nullable = false, columnDefinition = "nvarchar(max)")
     private String rubro;
 
-    @Column(nullable = false, length = 50)
+    @Column(name = "plandecuentas", nullable = false, length = 50)
     private String planDeCuentas;
 
-    @Column(nullable = false, length = 50)
+    @Column(name = "imputacion", nullable = false, length = 50)
     private String imputacion;
 
-    @Column(nullable = false)
+    @Column(name = "presupuestado", nullable = false)
     private boolean presupuestado = false;
 
-    @Column(nullable = false)
+    @Column(name = "adquirido", nullable = false)
     private boolean adquirido = false;
 
-    @Column(nullable = false, columnDefinition = "varchar(max) default 'generico'")
+    @Column(name = "marca", nullable = false, columnDefinition = "varchar(max) default 'generico'")
     private String marca;
 
-    @Column(nullable = false, columnDefinition = "varchar(max) default 'INSUMO'")
+    @Column(name = "tipo", nullable = false, columnDefinition = "varchar(max) default 'INSUMO'")
     private String tipo;
+
+    @ManyToOne
+    @JoinColumn(name = "productostockid")
+    private ProductosStock productoStock;
 
     public Long getId() {
         return id;
@@ -162,5 +168,13 @@ public class PedidoDeAdquisicionDetalle implements Serializable {
 
     public void setTipo(String tipo) {
         this.tipo = tipo;
+    }
+
+    public ProductosStock getProductoStock() {
+        return productoStock;
+    }
+
+    public void setProductoStock(ProductosStock productoStock) {
+        this.productoStock = productoStock;
     }
 }
