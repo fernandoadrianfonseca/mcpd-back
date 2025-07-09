@@ -7,7 +7,7 @@ import java.util.Date;
 import java.util.List;
 
 @Entity
-@Table(name = "comprasAdquisicionOrdenCompra")
+@Table(name = "comprasadquisicionordencompra")
 public class OrdenDeCompraAdquisicion implements Serializable {
 
     @Id
@@ -43,7 +43,7 @@ public class OrdenDeCompraAdquisicion implements Serializable {
     @Column(name = "partida", length = 50)
     private String partida;
 
-    @Column(name = "plan", length = 50)
+    @Column(name = "[plan]", length = 50)
     private String plan;
 
     @Column(name = "razon", length = 250)
@@ -52,7 +52,7 @@ public class OrdenDeCompraAdquisicion implements Serializable {
     @Column(name = "fantasia", length = 250)
     private String fantasia;
 
-    @Column(name = "cargaRemito", columnDefinition = "TEXT")
+    @Column(name = "cargaremito", columnDefinition = "TEXT")
     private String cargaRemito;
 
     @Column(name = "plazo", columnDefinition = "TEXT")
@@ -61,10 +61,10 @@ public class OrdenDeCompraAdquisicion implements Serializable {
     @Column(name = "validez", columnDefinition = "TEXT")
     private String validez;
 
-    @Column(name = "formaPago", columnDefinition = "TEXT")
+    @Column(name = "formapago", columnDefinition = "TEXT")
     private String formaPago;
 
-    @Column(name = "observacionesProveedor", columnDefinition = "TEXT")
+    @Column(name = "observacionesproveedor", columnDefinition = "TEXT")
     private String observacionesProveedor;
 
     @OneToMany(mappedBy = "ordenCompra", cascade = CascadeType.ALL, orphanRemoval = true)

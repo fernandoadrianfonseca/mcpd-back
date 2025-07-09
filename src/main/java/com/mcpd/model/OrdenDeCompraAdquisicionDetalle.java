@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import java.io.Serializable;
 
 @Entity
-@Table(name = "comprasAdquisicionOrdenCompraDetalle")
+@Table(name = "comprasadquisicionordencompradetalle")
 public class OrdenDeCompraAdquisicionDetalle implements Serializable {
 
     @Id
@@ -14,7 +14,7 @@ public class OrdenDeCompraAdquisicionDetalle implements Serializable {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "comprasAdquisicionOrdenCompra", nullable = false)
+    @JoinColumn(name = "comprasadquisicionordencompra", nullable = false)
     private OrdenDeCompraAdquisicion ordenCompra;
 
     @Column(name = "cantidad", nullable = false)

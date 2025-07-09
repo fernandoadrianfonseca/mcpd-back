@@ -1,5 +1,6 @@
 package com.mcpd.service;
 
+import com.mcpd.dto.PedidoDeAdquisicionDto;
 import com.mcpd.model.PedidoDeAdquisicion;
 import com.mcpd.repository.PedidoDeAdquisicionRepository;
 import org.springframework.data.domain.Sort;
@@ -35,5 +36,9 @@ public class PedidoDeAdquisicionService {
 
     public void deleteById(Long id) {
         repository.deleteById(id);
+    }
+
+    public List<Object[]> findPedidosConDetalles() {
+        return repository.findPedidosConDetalles();
     }
 }
