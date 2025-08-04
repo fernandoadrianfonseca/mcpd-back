@@ -38,6 +38,7 @@ public class PedidoDeAdquisicionDto {
     private Long pañolLegajoEmpleado;
     private boolean adquisicion;
     private boolean nuevoSistema;
+    private boolean entregado;
     private Date updated;
     private String estado;
     private String origen;
@@ -421,5 +422,13 @@ public class PedidoDeAdquisicionDto {
 
     public void setTotalFactura(BigDecimal totalFactura) {
         this.totalFactura = totalFactura;
+    }
+
+    public boolean isEntregado() {
+        return entregado;
+    }
+
+    public void setEntregado(boolean entregado) {
+        this.entregado = entregado;
     }
 }

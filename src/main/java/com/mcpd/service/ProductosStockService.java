@@ -2,6 +2,7 @@ package com.mcpd.service;
 
 import com.mcpd.dto.CustodiaItem;
 import com.mcpd.dto.StockConCustodiaDto;
+import com.mcpd.exception.StockInsuficienteException;
 import com.mcpd.model.ProductosStock;
 import com.mcpd.model.ProductosStockFlujo;
 import com.mcpd.repository.ProductosStockFlujoRepository;
@@ -75,7 +76,15 @@ public class ProductosStockService {
                 productosStockRepository.save(stock);
             }
             else{
-                stock.setCantidad(stock.getCantidad() - item.getCantidad().intValue());
+                int disponible = stock.getCantidad();
+                int solicitada = item.getCantidad().intValue();
+                int nuevaCantidad = disponible - solicitada;
+
+                if (nuevaCantidad < 0) {
+                    throw new StockInsuficienteException(stock.getId(), disponible, solicitada);
+                }
+
+                stock.setCantidad(nuevaCantidad);
             }
 
             ProductosStockFlujo ultimoFlujo = flujoRepository.findUltimoFlujoCustodia(item.getStockId(), legajoCustodia);

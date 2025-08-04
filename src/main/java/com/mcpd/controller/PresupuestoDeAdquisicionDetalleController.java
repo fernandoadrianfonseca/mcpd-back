@@ -2,6 +2,7 @@ package com.mcpd.controller;
 
 import com.mcpd.model.PresupuestoDeAdquisicionDetalle;
 import com.mcpd.service.PresupuestoDeAdquisicionDetalleService;
+import com.mcpd.service.PresupuestoDeAdquisicionService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,9 +14,11 @@ import java.util.List;
 public class PresupuestoDeAdquisicionDetalleController {
 
     private final PresupuestoDeAdquisicionDetalleService service;
+    private final PresupuestoDeAdquisicionService presupuestoService;
 
-    public PresupuestoDeAdquisicionDetalleController(PresupuestoDeAdquisicionDetalleService service) {
+    public PresupuestoDeAdquisicionDetalleController(PresupuestoDeAdquisicionDetalleService service, PresupuestoDeAdquisicionService presupuestoService) {
         this.service = service;
+        this.presupuestoService = presupuestoService;
     }
 
     @GetMapping
@@ -51,5 +54,33 @@ public class PresupuestoDeAdquisicionDetalleController {
         } else {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @GetMapping("/por-presupuesto/{numeroPresupuesto}")
+    public List<PresupuestoDeAdquisicionDetalle> getByPresupuesto(@PathVariable Long numeroPresupuesto) {
+        return service.findByNumeroPresupuesto(numeroPresupuesto);
+    }
+
+    @PostMapping("/lote")
+    public List<PresupuestoDeAdquisicionDetalle> createLote(@RequestBody List<PresupuestoDeAdquisicionDetalle> detalles) {
+
+        if (detalles.isEmpty()) return List.of();
+
+        Long numeroPresupuesto = detalles.get(0).getComprasadquisicionpresupuesto().getNumero();
+
+        // Borrar los existentes
+        service.deleteByNumeroPresupuesto(numeroPresupuesto);
+
+        // Guardar los nuevos
+        List<PresupuestoDeAdquisicionDetalle> nuevos = service.saveAll(detalles);
+
+        // Actualizar total
+        double total = nuevos.stream()
+                .mapToDouble(d -> d.getMontoUnitario() * d.getCantidad())
+                .sum();
+
+        presupuestoService.actualizarTotalPresupuesto(numeroPresupuesto, total);
+
+        return nuevos;
     }
 }

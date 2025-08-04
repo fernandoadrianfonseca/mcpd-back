@@ -133,3 +133,16 @@ ALTER TABLE comprasAdquisicionPedidoDetalle
 ALTER TABLE comprasAdquisicionPedidoDetalle
     ADD CONSTRAINT FK_pedidoDetalle_ProductosStock
         FOREIGN KEY (productoStockId) REFERENCES productos_stock(id);
+
+ALTER TABLE comprasAdquisicionPresupuesto
+    ADD nuevoSistema BIT NOT NULL DEFAULT 0,
+    [updated] DATETIME NULL;
+
+ALTER TABLE comprasAdquisicionPresupuestoDetalle
+    ADD productoStockId INT;
+
+ALTER TABLE comprasAdquisicionPedido
+    DROP COLUMN [updated];
+ALTER TABLE comprasAdquisicionPedido
+    ADD entregado BIT NOT NULL DEFAULT 0,
+    [updated] DATETIME NULL;

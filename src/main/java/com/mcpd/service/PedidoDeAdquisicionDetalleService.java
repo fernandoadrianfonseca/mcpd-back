@@ -3,6 +3,7 @@ package com.mcpd.service;
 import com.mcpd.model.PedidoDeAdquisicionDetalle;
 import com.mcpd.repository.PedidoDeAdquisicionDetalleRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -30,5 +31,14 @@ public class PedidoDeAdquisicionDetalleService {
 
     public void deleteById(Long id) {
         repository.deleteById(id);
+    }
+
+    @Transactional
+    public void eliminarDetallesPorPedidoId(Long pedidoId) {
+        repository.eliminarDetalles(pedidoId);
+    }
+
+    public List<PedidoDeAdquisicionDetalle> saveAll(List<PedidoDeAdquisicionDetalle> detalles) {
+        return repository.saveAll(detalles);
     }
 }

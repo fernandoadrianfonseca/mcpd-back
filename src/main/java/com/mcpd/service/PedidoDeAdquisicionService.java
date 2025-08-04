@@ -41,4 +41,20 @@ public class PedidoDeAdquisicionService {
     public List<Object[]> findPedidosConDetalles() {
         return repository.findPedidosConDetalles();
     }
+
+    public List<Object[]> findPedidosConStockDisponible() {
+        return repository.findPedidosConStockDisponible();
+    }
+
+    public void archivarPedido(Long numero) {
+        PedidoDeAdquisicion pedido = repository.findById(numero).orElseThrow();
+        pedido.setArchivado(true);
+        repository.save(pedido);
+    }
+
+    public void entregarPedido(Long numero) {
+        PedidoDeAdquisicion pedido = repository.findById(numero).orElseThrow();
+        pedido.setEntregado(true);
+        repository.save(pedido);
+    }
 }

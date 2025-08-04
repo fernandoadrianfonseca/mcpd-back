@@ -31,4 +31,15 @@ public class PresupuestoDeAdquisicionService {
     public void deleteById(Long id) {
         repository.deleteById(id);
     }
+
+    public List<PresupuestoDeAdquisicion> findByPedidoNumero(Long numeroPedido) {
+        return repository.findByPedido(numeroPedido);
+    }
+
+    public void actualizarTotalPresupuesto(Long numeroPresupuesto, double total) {
+        repository.findById(numeroPresupuesto).ifPresent(presupuesto -> {
+            presupuesto.setTotal(total);
+            repository.save(presupuesto);
+        });
+    }
 }

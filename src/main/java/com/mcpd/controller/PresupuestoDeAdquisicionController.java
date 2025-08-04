@@ -52,4 +52,9 @@ public class PresupuestoDeAdquisicionController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    @GetMapping("/porPedido/{numeroPedido}")
+    public List<PresupuestoDeAdquisicion> getByNumeroPedido(@PathVariable Long numeroPedido) {
+        return service.findByPedidoNumero(numeroPedido);
+    }
 }

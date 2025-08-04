@@ -1,11 +1,13 @@
 package com.mcpd.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
 
 @Entity
-@Table(name = "comprasAdquisicionPresupuestoDetalle")
+@Table(name = "comprasadquisicionpresupuestodetalle")
 public class PresupuestoDeAdquisicionDetalle implements Serializable {
 
     @Id
@@ -13,8 +15,9 @@ public class PresupuestoDeAdquisicionDetalle implements Serializable {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "comprasAdquisicionPresupuesto", nullable = false)
-    private PresupuestoDeAdquisicion comprasAdquisicionPresupuesto;
+    @JoinColumn(name = "comprasadquisicionpresupuesto", nullable = false)
+    @JsonBackReference
+    private PresupuestoDeAdquisicion comprasadquisicionpresupuesto;
 
     @Column(nullable = false)
     private Double cantidad;
@@ -29,7 +32,7 @@ public class PresupuestoDeAdquisicionDetalle implements Serializable {
     private String rubro;
 
     @Column(nullable = false)
-    private Double montoUnitario;
+    private Double montounitario;
 
     @Column(columnDefinition = "varchar(max)")
     private String observaciones;
@@ -37,10 +40,14 @@ public class PresupuestoDeAdquisicionDetalle implements Serializable {
     @Column(nullable = false)
     private Boolean aprobado = false;
 
-    private Long itemPedidoAdquisicion;
+    private Long itempedidoadquisicion;
 
     @Column(nullable = false)
     private Double adjudicado = 0.0;
+
+    @ManyToOne
+    @JoinColumn(name = "productostockid")
+    private ProductosStock productoStock;
 
     public Long getId() {
         return id;
@@ -50,12 +57,12 @@ public class PresupuestoDeAdquisicionDetalle implements Serializable {
         this.id = id;
     }
 
-    public PresupuestoDeAdquisicion getComprasAdquisicionPresupuesto() {
-        return comprasAdquisicionPresupuesto;
+    public PresupuestoDeAdquisicion getComprasadquisicionpresupuesto() {
+        return comprasadquisicionpresupuesto;
     }
 
-    public void setComprasAdquisicionPresupuesto(PresupuestoDeAdquisicion comprasAdquisicionPresupuesto) {
-        this.comprasAdquisicionPresupuesto = comprasAdquisicionPresupuesto;
+    public void setComprasadquisicionpresupuesto(PresupuestoDeAdquisicion comprasadquisicionpresupuesto) {
+        this.comprasadquisicionpresupuesto = comprasadquisicionpresupuesto;
     }
 
     public Double getCantidad() {
@@ -91,11 +98,11 @@ public class PresupuestoDeAdquisicionDetalle implements Serializable {
     }
 
     public Double getMontoUnitario() {
-        return montoUnitario;
+        return montounitario;
     }
 
-    public void setMontoUnitario(Double montoUnitario) {
-        this.montoUnitario = montoUnitario;
+    public void setMontoUnitario(Double montounitario) {
+        this.montounitario = montounitario;
     }
 
     public String getObservaciones() {
@@ -115,11 +122,11 @@ public class PresupuestoDeAdquisicionDetalle implements Serializable {
     }
 
     public Long getItemPedidoAdquisicion() {
-        return itemPedidoAdquisicion;
+        return itempedidoadquisicion;
     }
 
     public void setItemPedidoAdquisicion(Long itemPedidoAdquisicion) {
-        this.itemPedidoAdquisicion = itemPedidoAdquisicion;
+        this.itempedidoadquisicion = itemPedidoAdquisicion;
     }
 
     public Double getAdjudicado() {
@@ -128,5 +135,13 @@ public class PresupuestoDeAdquisicionDetalle implements Serializable {
 
     public void setAdjudicado(Double adjudicado) {
         this.adjudicado = adjudicado;
+    }
+
+    public ProductosStock getProductoStock() {
+        return productoStock;
+    }
+
+    public void setProductoStock(ProductosStock productoStock) {
+        this.productoStock = productoStock;
     }
 }

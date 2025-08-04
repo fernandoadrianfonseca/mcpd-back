@@ -1,5 +1,6 @@
 package com.mcpd.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
@@ -7,7 +8,7 @@ import java.util.Date;
 import java.util.List;
 
 @Entity
-@Table(name = "comprasAdquisicionPresupuesto")
+@Table(name = "comprasadquisicionpresupuesto")
 public class PresupuestoDeAdquisicion implements Serializable {
 
     @Id
@@ -26,7 +27,7 @@ public class PresupuestoDeAdquisicion implements Serializable {
     private Long pedido;
 
     @Column(nullable = false, length = 50)
-    private String numeroProveedor = "pendiente";
+    private String numeroproveedor = "pendiente";
 
     @Column(nullable = false, columnDefinition = "varchar(max) default '7'")
     private String validez;
@@ -35,13 +36,13 @@ public class PresupuestoDeAdquisicion implements Serializable {
     private String plazo;
 
     @Column(nullable = false, columnDefinition = "varchar(max) default '35/40 dias'")
-    private String formaPago;
+    private String formapago;
 
     @Column(nullable = false, columnDefinition = "text default 'S/N'")
     private String observaciones;
 
     @Column(nullable = false, columnDefinition = "text default 'S/O'")
-    private String observaAdjudicacion;
+    private String observaadjudicacion;
 
     @Column(length = 250)
     private String razon;
@@ -52,8 +53,27 @@ public class PresupuestoDeAdquisicion implements Serializable {
     @Column(nullable = false)
     private Double total = 0.0;
 
-    @OneToMany(mappedBy = "comprasAdquisicionPresupuesto", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Column(name = "nuevosistema", nullable = false)
+    private boolean nuevoSistema = false;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "updated", nullable = true)
+    private Date updated;
+
+    @OneToMany(mappedBy = "comprasadquisicionpresupuesto", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<PresupuestoDeAdquisicionDetalle> detalles;
+
+    @PrePersist
+    protected void onCreate() {
+        fecha = new Date();
+        updated = new Date();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updated = new Date();
+    }
 
     public Long getNumero() {
         return numero;
@@ -88,11 +108,11 @@ public class PresupuestoDeAdquisicion implements Serializable {
     }
 
     public String getNumeroProveedor() {
-        return numeroProveedor;
+        return numeroproveedor;
     }
 
     public void setNumeroProveedor(String numeroProveedor) {
-        this.numeroProveedor = numeroProveedor;
+        this.numeroproveedor = numeroProveedor;
     }
 
     public String getValidez() {
@@ -112,11 +132,11 @@ public class PresupuestoDeAdquisicion implements Serializable {
     }
 
     public String getFormaPago() {
-        return formaPago;
+        return formapago;
     }
 
     public void setFormaPago(String formaPago) {
-        this.formaPago = formaPago;
+        this.formapago = formaPago;
     }
 
     public String getObservaciones() {
@@ -128,11 +148,11 @@ public class PresupuestoDeAdquisicion implements Serializable {
     }
 
     public String getObservaAdjudicacion() {
-        return observaAdjudicacion;
+        return observaadjudicacion;
     }
 
     public void setObservaAdjudicacion(String observaAdjudicacion) {
-        this.observaAdjudicacion = observaAdjudicacion;
+        this.observaadjudicacion = observaAdjudicacion;
     }
 
     public String getRazon() {
@@ -157,6 +177,18 @@ public class PresupuestoDeAdquisicion implements Serializable {
 
     public void setTotal(Double total) {
         this.total = total;
+    }
+
+    public boolean isNuevoSistema() {
+        return nuevoSistema;
+    }
+
+    public void setNuevoSistema(boolean nuevoSistema) {
+        this.nuevoSistema = nuevoSistema;
+    }
+
+    public Date getUpdated() {
+        return updated;
     }
 
     public List<PresupuestoDeAdquisicionDetalle> getDetalles() {

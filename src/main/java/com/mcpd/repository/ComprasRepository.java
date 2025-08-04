@@ -7,6 +7,7 @@ import jakarta.persistence.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @Repository
@@ -28,6 +29,11 @@ public class ComprasRepository {
                     (String) fila[2]
             ));
         }
+
+        /*lista.sort(Comparator.comparing(
+                ComprasImputacionDto::getImputacion,
+                Comparator.nullsLast(String::compareToIgnoreCase)
+        ));*/
 
         return lista;
     }

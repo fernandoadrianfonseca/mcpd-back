@@ -3,6 +3,7 @@ package com.mcpd.controller;
 import com.mcpd.model.PedidoDeAdquisicionDetalle;
 import com.mcpd.service.PedidoDeAdquisicionDetalleService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -35,6 +36,12 @@ public class PedidoDeAdquisicionDetalleController {
         return service.save(detalle);
     }
 
+    @PostMapping("/lote")
+    @Transactional
+    public List<PedidoDeAdquisicionDetalle> createLote(@RequestBody List<PedidoDeAdquisicionDetalle> detalles) {
+        return service.saveAll(detalles);
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<PedidoDeAdquisicionDetalle> update(@PathVariable Long id, @RequestBody PedidoDeAdquisicionDetalle detalle) {
         return service.findById(id).map(existing -> {
@@ -51,5 +58,11 @@ public class PedidoDeAdquisicionDetalleController {
         } else {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @DeleteMapping("/por-pedido/{pedidoId}")
+    public ResponseEntity<Void> eliminarDetallesPorPedido(@PathVariable Long pedidoId) {
+        service.eliminarDetallesPorPedidoId(pedidoId);
+        return ResponseEntity.noContent().build();
     }
 }

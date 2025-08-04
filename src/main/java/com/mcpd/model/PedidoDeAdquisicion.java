@@ -112,6 +112,9 @@ public class PedidoDeAdquisicion implements Serializable {
     @Column(name = "nuevosistema", nullable = false)
     private boolean nuevoSistema = false;
 
+    @Column(name = "entregado", nullable = false)
+    private boolean entregado = false;
+
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "updated", nullable = true)
     private Date updated;
@@ -390,6 +393,14 @@ public class PedidoDeAdquisicion implements Serializable {
 
     public void setNuevoSistema(boolean nuevoSistema) {
         this.nuevoSistema = nuevoSistema;
+    }
+
+    public boolean isEntregado() {
+        return entregado;
+    }
+
+    public void setEntregado(boolean entregado) {
+        this.entregado = entregado;
     }
 
     public Date getUpdated() {

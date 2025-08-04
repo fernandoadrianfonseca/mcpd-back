@@ -7,14 +7,15 @@ import com.mcpd.model.ProveedorFactura;
 import com.mcpd.repository.FacturaRepository;
 import com.mcpd.repository.OrdenDeCompraAdquisicionRepository;
 import com.mcpd.repository.OrdenDePagoRepository;
+import com.mcpd.service.PedidoDeAdquisicionDetalleService;
 import com.mcpd.service.PedidoDeAdquisicionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @RestController
 @RequestMapping("/pedidos")
@@ -30,6 +31,9 @@ public class PedidoDeAdquisicionController {
     @Autowired
     private FacturaRepository facturaRepository;
 
+    @Autowired
+    PedidoDeAdquisicionDetalleService detalleService;
+
     private final PedidoDeAdquisicionService service;
 
     public PedidoDeAdquisicionController(PedidoDeAdquisicionService service) {
@@ -38,9 +42,28 @@ public class PedidoDeAdquisicionController {
 
     @GetMapping
     public List<PedidoDeAdquisicionDto> findAll() {
+        List<Long> pedidosConStock = service.findPedidosConStockDisponible()
+                .stream()
+                .map(row -> ((Number) row[1]).longValue())
+                .toList();
+
         return service.findPedidosConDetalles()
                 .stream()
-                .map(this::convertToDto)
+                .map(dto -> convertToDto(dto, pedidosConStock))
+                .toList();
+    }
+
+    @GetMapping("/con-stock-disponible")
+    public List<PedidoDeAdquisicionDto> getPedidosConStockDisponible() {
+        List<Object[]> resultados = service.findPedidosConStockDisponible();
+
+        // Extraer lista de números de pedido con stock
+        List<Long> pedidosConStock = resultados.stream()
+                .map(row -> ((Number) row[1]).longValue()) // row[1] es el número
+                .toList();
+
+        return resultados.stream()
+                .map(row -> convertToDto(row, pedidosConStock))
                 .toList();
     }
 
@@ -58,10 +81,49 @@ public class PedidoDeAdquisicionController {
 
     @PutMapping("/{id}")
     public ResponseEntity<PedidoDeAdquisicion> update(@PathVariable Long id, @RequestBody PedidoDeAdquisicion pedido) {
+
+        detalleService.eliminarDetallesPorPedidoId(id);
         return service.findById(id).map(existing -> {
             pedido.setNumero(id);
-            return ResponseEntity.ok(service.save(pedido));
+            if (pedido.getDetalles() == null) {
+                pedido.setDetalles(new ArrayList<>());
+            }
+            PedidoDeAdquisicion actualizado = service.save(pedido);
+            return ResponseEntity.ok(actualizado);
         }).orElse(ResponseEntity.notFound().build());
+    }
+
+    @PutMapping("/{id}/autorizar")
+    public ResponseEntity<?> actualizarAutorizacion(
+            @PathVariable Long id,
+            @RequestBody Map<String, Object> payload) {
+
+        String tipo = (String) payload.get("tipo");
+        Boolean valor = Boolean.valueOf(payload.get("valor").toString());
+
+        return service.findById(id).map(pedido -> {
+            if ("hacienda".equalsIgnoreCase(tipo)) {
+                pedido.setHacienda(valor);
+            } else if ("pañol".equalsIgnoreCase(tipo)) {
+                pedido.setPañol(valor);
+            } else {
+                return ResponseEntity.badRequest().body("Tipo de autorización inválido");
+            }
+
+            service.save(pedido);
+            return ResponseEntity.ok().build();
+
+        }).orElse(ResponseEntity.notFound().build());
+    }
+
+    @PutMapping("/archivar/{numero}")
+    public void archivarPedido(@PathVariable Long numero) {
+        service.archivarPedido(numero);
+    }
+
+    @PutMapping("/entregar/{numero}")
+    public void entregarPedido(@PathVariable Long numero) {
+        service.entregarPedido(numero);
     }
 
     @DeleteMapping("/{id}")
@@ -74,7 +136,7 @@ public class PedidoDeAdquisicionController {
         }
     }
 
-    private PedidoDeAdquisicionDto convertToDto(Object[] row) {
+    private PedidoDeAdquisicionDto convertToDto(Object[] row, List<Long> pedidosConStock) {
 
         PedidoDeAdquisicionDto dto = new PedidoDeAdquisicionDto();
 
@@ -101,15 +163,40 @@ public class PedidoDeAdquisicionController {
         dto.setNombre((String) row[20]);
         dto.setCuit(row[21] != null ? String.valueOf(row[21]) : null);
         dto.setTotalFactura(row[22] != null ? new BigDecimal(row[22].toString()) : null);
+        dto.setAdquisicion((Boolean) row[23]);
+        dto.setNuevoSistema((Boolean) row[24]);
+        dto.setPañol((Boolean) row[25]);
+        dto.setEntregado((Boolean) row[26]);
 
-        String estado = getEstadoString(dto);
+        String estado = getEstadoString(dto, pedidosConStock);
 
         dto.setEstado(estado);
 
         return dto;
     }
 
-    private static String getEstadoString(PedidoDeAdquisicionDto dto) {
+    private static String getEstadoString(PedidoDeAdquisicionDto dto, List<Long> pedidosConStockDisponible) {
+        if (!dto.isAdquisicion()) {
+            boolean tieneStockCompleto = pedidosConStockDisponible.contains(dto.getNumero());
+
+            if (dto.isArchivado() && dto.isEntregado()) {
+                return "Interno: Archivado Con Stock Entregado";
+            } else if (dto.isArchivado() && !dto.isEntregado()) {
+                return "Interno: Archivado";
+            } else if (dto.isHacienda() && !tieneStockCompleto) {
+                return "Interno: Sin Stock";
+            } else if (dto.isHacienda() && tieneStockCompleto) {
+                return "Interno: Listo Para Entrega";
+            } else if (dto.isHacienda()) {
+                return "Interno: Autorizado Por Hacienda";
+            } else if (dto.isPañol()) {
+                return "Interno: Autorizado Por Pañol";
+            } else {
+                return "Interno: Pendiente";
+            }
+        }
+
+        // Lógica para adquisición == true (como estaba antes)
         String estado = "Pendiente";
 
         if (dto.isHacienda() && !dto.isArchivado() && dto.getNumeroInstrumentoAdquisicion() == null) {
@@ -125,6 +212,7 @@ public class PedidoDeAdquisicionController {
         } else if (dto.isHacienda() && dto.getNumeroInstrumentoAdquisicion() != null && dto.getFactura() != null && dto.getOp() != null) {
             estado = "Pagado";
         }
+
         return estado;
     }
 }
