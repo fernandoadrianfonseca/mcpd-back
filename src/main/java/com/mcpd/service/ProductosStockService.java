@@ -10,6 +10,7 @@ import com.mcpd.repository.ProductosStockRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -48,7 +49,9 @@ public class ProductosStockService {
             ProductosStock stock = dto.stock();
             stock.setCantidadCustodia(dto.cantidadCustodia().intValue()); // Seteamos correctamente
             return stock;
-        }).toList();
+        })
+        .sorted(Comparator.comparing(ProductosStock::getId))
+        .toList();
     }
 
     public List<ProductosStock> getStockActualExcluyendoCustodia(Long legajoCustodia) {
@@ -58,7 +61,9 @@ public class ProductosStockService {
             ProductosStock stock = dto.stock();
             stock.setCantidadCustodia(dto.cantidadCustodia().intValue()); // Seteamos correctamente
             return stock;
-        }).toList();
+        })
+        .sorted(Comparator.comparing(ProductosStock::getId))
+        .toList();
     }
 
     public List<ProductosStock> getStockDisponibleParaAsignar() {

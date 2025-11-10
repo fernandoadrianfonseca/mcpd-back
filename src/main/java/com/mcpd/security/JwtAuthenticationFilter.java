@@ -64,9 +64,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 auth.setDetails(claims);
 
                 SecurityContextHolder.getContext().setAuthentication(auth);
-            } catch (Exception ex) {
-                // Token inválido/expirado → limpiamos contexto y seguimos (dejará 401 más adelante)
+            } catch (io.jsonwebtoken.JwtException | IllegalArgumentException ex) {
+                // Token inválido o expirado → limpiamos contexto
                 SecurityContextHolder.clearContext();
+            } catch (Exception ex) {
+                // Si fue otro tipo de excepción, no limpiar el contexto
+                // para que el backend pueda manejarla correctamente
+                throw ex;
             }
         }
 

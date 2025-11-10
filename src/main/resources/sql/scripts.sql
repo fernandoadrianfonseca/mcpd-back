@@ -83,21 +83,6 @@ CREATE TABLE productos_stock_flujo (
         REFERENCES rrhhempleado(legajo)
 );
 
-CREATE TABLE productos_numeros_de_serie (
-    id INT IDENTITY(1,1) PRIMARY KEY,
-    id_producto_flujo INT NOT NULL,
-    numero_de_serie NVARCHAR(255) NOT NULL,
-    empleado_custodia BIGINT,
-    activo BIT NOT NULL DEFAULT 1,
-    updated DATETIME NOT NULL
-
-    CONSTRAINT FK_NumeroSerie_ProductoFlujo FOREIGN KEY (id_producto_flujo)
-        REFERENCES productos_stock_flujo(id),
-
-    CONSTRAINT FK_NumeroSerie_Custodia FOREIGN KEY (empleado_custodia)
-        REFERENCES rrhhempleado(legajo)
-);
-
 CREATE TABLE reportes_log (
    id BIGINT IDENTITY(1,1) PRIMARY KEY,
    id_reporte NVARCHAR(255) NOT NULL,
@@ -146,3 +131,143 @@ ALTER TABLE comprasAdquisicionPedido
 ALTER TABLE comprasAdquisicionPedido
     ADD entregado BIT NOT NULL DEFAULT 0,
     [updated] DATETIME NULL;
+
+---REFACTOR productos_numeros_de_serie POR productos_informacion
+
+USE [Mcpd];
+GO
+
+SELECT * INTO productos_informacion_backup FROM productos_informacion;
+
+IF OBJECT_ID('dbo.productos_informacion', 'U') IS NOT NULL
+BEGIN
+    DROP TABLE dbo.productos_informacion;
+END
+GO
+
+CREATE TABLE [dbo].[productos_informacion](
+    [id] INT IDENTITY(1,1) NOT NULL,
+    [id_producto_flujo] INT NOT NULL,
+    [codigo] NVARCHAR(255),
+    [codigo_producto] BIGINT,
+    [codigo_general] NVARCHAR(255),
+    [codigo_antiguo] NVARCHAR(255),
+    [numero_de_serie] NVARCHAR(255),
+    [observaciones] NVARCHAR(MAX),
+    [empleado_custodia] BIGINT NULL,
+    [activo] BIT NOT NULL CONSTRAINT DF_productos_informacion_activo DEFAULT (1),
+    [updated] DATETIME NULL,
+    CONSTRAINT PK_productos_informacion PRIMARY KEY CLUSTERED ([id] ASC)
+    );
+GO
+
+ALTER TABLE [dbo].[productos_informacion]  WITH CHECK ADD  CONSTRAINT [FK_Info_Custodia]
+    FOREIGN KEY([empleado_custodia])
+    REFERENCES [dbo].[rrhhEmpleado] ([legajo]);
+GO
+
+ALTER TABLE [dbo].[productos_informacion]  WITH CHECK ADD  CONSTRAINT [FK_Info_ProductoFlujo]
+    FOREIGN KEY([id_producto_flujo])
+    REFERENCES [dbo].[productos_stock_flujo] ([id]);
+GO
+
+CREATE INDEX IX_productos_informacion_id_producto_flujo
+    ON productos_informacion (id_producto_flujo);
+
+CREATE INDEX IX_productos_stock_flujo_producto_stock
+    ON productos_stock_flujo (producto_stock);
+
+-----
+
+CREATE TRIGGER [dbo].[TRG_productos_informacion_autocodigo]
+ON [dbo].[productos_informacion]
+AFTER INSERT
+AS
+BEGIN
+      SET NOCOUNT ON;
+
+      /*
+        LÓGICA:
+        - 'ins' = filas recién insertadas (id + producto_stock via flujo)
+        - 'existing_counts' = por cada producto_stock, cantidad de registros VIEJOS (excluye inserted)
+        - 'numbered' = fila insertada con rn = 1..N por producto_stock
+        - new_seq = existing_count + rn  -> asignamos a cada insertado su número correlativo
+        - Actualizamos SOLO las filas cuya id está en inserted (JOIN por id)
+      */
+
+      -- 1) CTE con insertados y su producto_stock
+      ;WITH ins AS (
+        SELECT i.id AS inserted_id, f.producto_stock
+        FROM inserted i
+        INNER JOIN productos_stock_flujo f ON f.id = i.id_producto_flujo
+      ),
+
+      -- 2) contaje de EXISTENTES por producto_stock (excluyendo los inserted)
+      existing_counts AS (
+          SELECT f.producto_stock,
+                 COUNT(pi.id) AS existing_count
+          FROM productos_stock_flujo f
+                   LEFT JOIN productos_informacion pi
+                             ON pi.id_producto_flujo = f.id
+                                 AND pi.id NOT IN (SELECT inserted_id FROM ins)  -- excluir los insertados
+          WHERE f.producto_stock IN (SELECT DISTINCT producto_stock FROM ins)
+          GROUP BY f.producto_stock
+      ),
+
+      -- 3) numerar los insertados por producto_stock (rn = 1,2,...)
+      numbered AS (
+          SELECT
+              ins.inserted_id AS id,
+              ins.producto_stock,
+              ROW_NUMBER() OVER (PARTITION BY ins.producto_stock ORDER BY ins.inserted_id) AS rn
+          FROM ins
+      ),
+
+      -- 4) unir numerado con existing_counts para obtener new_seq
+      to_update AS (
+          SELECT
+              n.id,
+              n.producto_stock,
+              COALESCE(ec.existing_count, 0) + n.rn AS new_seq
+          FROM numbered n
+                   LEFT JOIN existing_counts ec ON ec.producto_stock = n.producto_stock
+      )
+
+      -- 5) actualizamos SOLO las filas insertadas
+      UPDATE pi
+      SET
+        codigo_producto = tu.new_seq,
+        codigo = CAST(tu.producto_stock AS NVARCHAR(50)) + '-' + CAST(tu.new_seq AS NVARCHAR(50)),
+        codigo_general = CAST(tu.producto_stock AS NVARCHAR(50)) + '-' + CAST(pi.id AS NVARCHAR(50))
+        FROM productos_informacion pi
+        INNER JOIN to_update tu ON tu.id = pi.id;
+END;
+
+
+INSERT INTO dbo.productos_informacion
+    ([id_producto_flujo], [numero_de_serie], [empleado_custodia], [activo], [updated])
+    SELECT
+        [id_producto_flujo],
+        [numero_de_serie],
+        [empleado_custodia],
+        [activo],
+        [updated]
+    FROM dbo.productos_informacion_backup;
+
+
+    PRINT '✅ Datos migrados a la nueva estructura';
+GO
+
+DROP TABLE dbo.productos_informacion_backup
+GO
+
+
+-------------------------------------------------------------------
+
+DELETE FROM productos_informacion;
+DBCC CHECKIDENT ('productos_informacion', RESEED, 0);
+
+
+
+
+

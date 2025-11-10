@@ -5,8 +5,8 @@ import jakarta.persistence.*;
 import java.util.Date;
 
 @Entity
-@Table(name = "productos_numeros_de_serie")
-public class ProductosNumeroDeSerie {
+@Table(name = "productos_informacion")
+public class ProductosInformacion {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,8 +16,23 @@ public class ProductosNumeroDeSerie {
     @JoinColumn(name = "id_producto_flujo")
     private ProductosStockFlujo productoFlujo;
 
-    @Column(name = "numero_de_serie", nullable = false)
+    @Column(nullable = true, length = 255)
+    private String codigo;
+
+    @Column(nullable = true, length = 255)
+    private Integer codigoProducto;
+
+    @Column(nullable = true, length = 255)
+    private String codigoGeneral;
+
+    @Column(nullable = true, length = 255)
+    private String codigoAntiguo;
+
+    @Column(name = "numero_de_serie", nullable = true)
     private String numeroDeSerie;
+
+    @Column(name = "observaciones", nullable = true)
+    private String observaciones;
 
     @ManyToOne
     @JoinColumn(name = "empleado_custodia")
@@ -47,8 +62,48 @@ public class ProductosNumeroDeSerie {
     public ProductosStockFlujo getProductoFlujo() { return productoFlujo; }
     public void setProductoFlujo(ProductosStockFlujo productoFlujo) { this.productoFlujo = productoFlujo; }
 
+    public String getCodigo() {
+        return codigo;
+    }
+
+    public void setCodigo(String codigo) {
+        this.codigo = codigo;
+    }
+
+    public Integer getCodigoProducto() {
+        return codigoProducto;
+    }
+
+    public void setCodigoProducto(Integer codigoProducto) {
+        this.codigoProducto = codigoProducto;
+    }
+
+    public String getCodigoGeneral() {
+        return codigoGeneral;
+    }
+
+    public void setCodigoGeneral(String codigoGeneral) {
+        this.codigoGeneral = codigoGeneral;
+    }
+
+    public String getCodigoAntiguo() {
+        return codigoAntiguo;
+    }
+
+    public void setCodigoAntiguo(String codigoAntiguo) {
+        this.codigoAntiguo = codigoAntiguo;
+    }
+
     public String getNumeroDeSerie() { return numeroDeSerie; }
     public void setNumeroDeSerie(String numeroDeSerie) { this.numeroDeSerie = numeroDeSerie; }
+
+    public String getObservaciones() {
+        return observaciones;
+    }
+
+    public void setObservaciones(String observaciones) {
+        this.observaciones = observaciones;
+    }
 
     public Empleado getEmpleadoCustodia() {
         return empleadoCustodia;

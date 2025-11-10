@@ -1,6 +1,7 @@
 package com.mcpd.config;
 
-import com.google.gson.Gson;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.servlet.http.HttpServletRequest;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.*;
@@ -19,7 +20,8 @@ public class ControllerLoggingAspect {
     private HttpServletRequest request;
 
     private static final Logger logger = LoggerFactory.getLogger(ControllerLoggingAspect.class);
-    private static final Gson gson = new Gson();
+
+    private static final ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
 
     // 🧠 Asociación IP → Usuario
     private static final Map<String, String> ipUsuarioMap = new ConcurrentHashMap<>();
@@ -59,7 +61,12 @@ public class ControllerLoggingAspect {
                 logger.info("🡺 [{}] Ejecutando: {} (sin parámetros)", ipAddress, method);
             }
         } else {
-            String argsJson = gson.toJson(args);
+            String argsJson;
+            try {
+                argsJson = mapper.writeValueAsString(args);
+            } catch (Exception e) {
+                argsJson = "[no serializable]";
+            }
             String usuario = ipUsuarioMap.getOrDefault(ipAddress, "desconocido");
             logger.info("🡺 [{}] Usuario: {} → Ejecutando: {} con parámetros: {}", ipAddress, usuario, method, argsJson);
         }
@@ -86,13 +93,20 @@ public class ControllerLoggingAspect {
         // Verificar usuario asociado a la IP
         String usuario = ipUsuarioMap.getOrDefault(ipAddress, "Desconocido");
 
+        String argsJson;
+        try {
+            argsJson = mapper.writeValueAsString(args);
+        } catch (Exception e) {
+            argsJson = "[no serializable]";
+        }
+
         logger.error(
                 "❌ Excepción en [{}] {} - Clase: {} - Usuario: {} - Parámetros: {} - Tipo: {}",
                 ipAddress,
                 method,
                 className,
                 usuario,
-                gson.toJson(args),
+                argsJson,
                 ex.getClass().getSimpleName(),
                 ex
         );

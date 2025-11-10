@@ -1,46 +1,45 @@
 package com.mcpd.controller;
 
-import com.mcpd.dto.ProductosNumeroDeSerieDto;
-import com.mcpd.model.ProductosNumeroDeSerie;
-import com.mcpd.service.ProductosNumeroDeSerieService;
+import com.mcpd.dto.ProductosInformacionDto;
+import com.mcpd.model.ProductosInformacion;
+import com.mcpd.service.ProductosInformacionService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/numeros-de-serie")
+@RequestMapping("/informacion")
 @CrossOrigin(origins = "*")
-public class ProductosNumeroDeSerieController {
+public class ProductosInformacionController {
 
-    private final ProductosNumeroDeSerieService service;
+    private final ProductosInformacionService service;
 
-    public ProductosNumeroDeSerieController(ProductosNumeroDeSerieService service) {
+    public ProductosInformacionController(ProductosInformacionService service) {
         this.service = service;
     }
 
     @GetMapping
-    public List<ProductosNumeroDeSerie> getAll() {
+    public List<ProductosInformacion> getAll() {
         return service.findAll();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProductosNumeroDeSerie> getById(@PathVariable Integer id) {
+    public ResponseEntity<ProductosInformacion> getById(@PathVariable Integer id) {
         return service.findById(id)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public ProductosNumeroDeSerie create(@RequestBody ProductosNumeroDeSerie entity) {
+    public ProductosInformacion create(@RequestBody ProductosInformacion entity) {
         return service.save(entity);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ProductosNumeroDeSerie> update(@PathVariable Integer id, @RequestBody ProductosNumeroDeSerie entity) {
-        Optional<ProductosNumeroDeSerie> existing = service.findById(id);
+    public ResponseEntity<ProductosInformacion> update(@PathVariable Integer id, @RequestBody ProductosInformacion entity) {
+        Optional<ProductosInformacion> existing = service.findById(id);
         if (existing.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
@@ -50,7 +49,7 @@ public class ProductosNumeroDeSerieController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Integer id) {
-        Optional<ProductosNumeroDeSerie> existing = service.findById(id);
+        Optional<ProductosInformacion> existing = service.findById(id);
         if (existing.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
@@ -59,12 +58,12 @@ public class ProductosNumeroDeSerieController {
     }
 
     @GetMapping("/flujo/{id}")
-    public List<ProductosNumeroDeSerie> getByProductoFlujoId(@PathVariable Integer id) {
+    public List<ProductosInformacion> getByProductoFlujoId(@PathVariable Integer id) {
         return service.findByProductoFlujoId(id);
     }
 
     @GetMapping("/producto-stock/{productoStockId}")
-    public List<ProductosNumeroDeSerie> getByProductoStockId(
+    public List<ProductosInformacion> getByProductoStockId(
             @PathVariable Integer productoStockId,
             @RequestParam(required = false) Boolean activo,
             @RequestParam(required = false) Long empleadoCustodia) {
@@ -77,24 +76,24 @@ public class ProductosNumeroDeSerieController {
     }
 
     @PostMapping("/lote")
-    public List<ProductosNumeroDeSerie> crearEnLote(@RequestBody List<ProductosNumeroDeSerie> lista) {
+    public List<ProductosInformacion> crearEnLote(@RequestBody List<ProductosInformacion> lista) {
         return service.saveAll(lista);
     }
 
     @GetMapping("/producto-stock/{productoStockId}/sin-custodia")
-    public List<ProductosNumeroDeSerie> getActivosSinCustodiaPorProductoStock(@PathVariable Integer productoStockId) {
+    public List<ProductosInformacion> getActivosSinCustodiaPorProductoStock(@PathVariable Integer productoStockId) {
         return service.obtenerNumerosDeSerieActivosSinCustodia(productoStockId);
     }
 
     @PutMapping("/asignar-custodia")
-    public List<ProductosNumeroDeSerieDto> asignarCustodia(
+    public List<ProductosInformacionDto> asignarCustodia(
             @RequestBody List<Integer> ids,
             @RequestParam(value = "legajo", required = false) Long legajo) {
         return service.asignarCustodia(ids, legajo);
     }
 
     @PutMapping("/darDeBaja")
-    public List<ProductosNumeroDeSerie> darDeBajaNumerosDeSerie(@RequestBody List<Integer> ids) {
+    public List<ProductosInformacion> darDeBajaNumerosDeSerie(@RequestBody List<Integer> ids) {
         return service.darDeBajaNumerosDeSerie(ids);
     }
 }
