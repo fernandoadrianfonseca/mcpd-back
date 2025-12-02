@@ -1,6 +1,8 @@
 package com.mcpd.repository;
 
+import com.mcpd.dto.StockCategoriaDto;
 import com.mcpd.dto.StockConCustodiaDto;
+import com.mcpd.dto.StockProductoDto;
 import com.mcpd.model.ProductosStock;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -51,4 +53,33 @@ public interface ProductosStockRepository extends JpaRepository<ProductosStock, 
         WHERE (ps.cantidad - ps.cantidadCustodia) > 0
     """)
     List<ProductosStock> findStockDisponibleParaAsignar();
+
+    @Query("""
+    SELECT 
+        new com.mcpd.dto.StockCategoriaDto(
+            ps.categoria.id,
+            ps.categoriaNombre,
+            SUM(ps.cantidad),
+            SUM(ps.cantidadCustodia),
+            SUM(ps.cantidad - ps.cantidadCustodia)
+        )
+    FROM ProductosStock ps
+    GROUP BY ps.categoria.id, ps.categoriaNombre
+    """)
+    List<StockCategoriaDto> obtenerStockPorCategoria();
+
+    @Query("""
+    SELECT 
+        new com.mcpd.dto.StockProductoDto(
+            ps.producto.id,
+            ps.productoNombre,
+            ps.categoriaNombre,
+            SUM(ps.cantidad),
+            SUM(ps.cantidadCustodia),
+            SUM(ps.cantidad - ps.cantidadCustodia)
+        )
+    FROM ProductosStock ps
+    GROUP BY ps.producto.id, ps.productoNombre, ps.categoriaNombre
+    """)
+    List<StockProductoDto> obtenerStockPorProducto();
 }

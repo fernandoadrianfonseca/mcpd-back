@@ -1,6 +1,8 @@
 package com.mcpd.controller;
 
 import com.mcpd.dto.CustodiaItem;
+import com.mcpd.dto.StockCategoriaDto;
+import com.mcpd.dto.StockProductoDto;
 import com.mcpd.model.ProductosStock;
 import com.mcpd.service.ProductosStockService;
 import org.springframework.http.ResponseEntity;
@@ -94,5 +96,15 @@ public class ProductosStockController {
             @RequestParam("legajoCarga") Long legajoCarga
     ) {
         productosStockService.transferirCustodia(items, legajoOrigen, legajoDestino, legajoCarga);
+    }
+
+    @GetMapping("/por-categorias")
+    public List<StockCategoriaDto> obtenerStockPorCategoria() {
+        return productosStockService.obtenerStockPorCategoria();
+    }
+
+    @GetMapping("/por-producto")
+    public List<StockProductoDto> stockPorProducto() {
+        return productosStockService.obtenerStockPorProducto();
     }
 }

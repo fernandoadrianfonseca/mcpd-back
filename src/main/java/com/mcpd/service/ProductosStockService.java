@@ -1,7 +1,9 @@
 package com.mcpd.service;
 
 import com.mcpd.dto.CustodiaItem;
+import com.mcpd.dto.StockCategoriaDto;
 import com.mcpd.dto.StockConCustodiaDto;
+import com.mcpd.dto.StockProductoDto;
 import com.mcpd.exception.StockInsuficienteException;
 import com.mcpd.model.ProductosStock;
 import com.mcpd.model.ProductosStockFlujo;
@@ -181,5 +183,13 @@ public class ProductosStockService {
             flujoAlta.setObservaciones("Transferencia de custodia " + Optional.ofNullable(item.getObservaciones()).orElse(""));
             flujoRepository.save(flujoAlta);
         }
+    }
+
+    public List<StockCategoriaDto> obtenerStockPorCategoria() {
+        return productosStockRepository.obtenerStockPorCategoria();
+    }
+
+    public List<StockProductoDto> obtenerStockPorProducto() {
+        return productosStockRepository.obtenerStockPorProducto();
     }
 }
