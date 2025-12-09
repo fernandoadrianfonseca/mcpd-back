@@ -12,6 +12,8 @@
 	<field name="oc" class="java.lang.String"/>
 	<field name="remito" class="java.lang.String"/>
 	<field name="codigoInventario" class="java.lang.String"/>
+	<field name="codigos" class="java.lang.String"/>
+	<field name="observaciones" class="java.lang.String"/>
 	<title>
 		<band height="217">
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
@@ -74,10 +76,10 @@
 				</textElement>
 				<textFieldExpression><![CDATA["<style pdfFontName='Helvetica-Bold'>" + String.format("%.2f", $F{cantidad}.doubleValue()) + "</style> " +
 					$F{descripcion} + 
-					" - <style pdfFontName='Helvetica-Bold'>O/C:</style> " +
-					"<style forecolor='red'>" + $F{oc} + "</style>" +
-					" - <style pdfFontName='Helvetica-Bold'>Remito:</style> " +
-					"<style forecolor='red'>" + $F{remito} + "</style>"]]></textFieldExpression>
+					" - <style pdfFontName='Helvetica-Bold'>Códigos:</style> " +
+					"<style forecolor='black'>" + $F{codigos} + "</style>" +
+					" - <style pdfFontName='Helvetica-Bold'>Observaciones:</style> " +
+                    "<style forecolor='black'>" + $F{observaciones} + "</style>"]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

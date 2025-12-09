@@ -12,6 +12,9 @@
 	<field name="oc" class="java.lang.String"/>
 	<field name="remito" class="java.lang.String"/>
 	<field name="codigoInventario" class="java.lang.String"/>
+	<field name="codigos" class="java.lang.String"/>
+	<field name="observaciones" class="java.lang.String"/>
+	<field name="motivoBaja" class="java.lang.String"/>
 	<title>
 		<band height="217">
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
@@ -74,10 +77,12 @@
 				</textElement>
 				<textFieldExpression><![CDATA["<style pdfFontName='Helvetica-Bold'>" + String.format("%.2f", $F{cantidad}.doubleValue()) + "</style> " +
 					$F{descripcion} + 
-					" - <style pdfFontName='Helvetica-Bold'>O/C:</style> " +
-					"<style forecolor='red'>" + $F{oc} + "</style>" +
-					" - <style pdfFontName='Helvetica-Bold'>Remito:</style> " +
-					"<style forecolor='red'>" + $F{remito} + "</style>"]]></textFieldExpression>
+					" - <style pdfFontName='Helvetica-Bold'>Códigos:</style> " +
+					"<style forecolor='black'>" + $F{codigos} + "</style>" +
+					" - <style pdfFontName='Helvetica-Bold'>Observaciones:</style> " +
+                    "<style forecolor='black'>" + $F{observaciones} + "</style>"+
+					" - <style pdfFontName='Helvetica-Bold'>Motivo De Baja:</style> " +
+                    "<style forecolor='black'>" + $F{motivoBaja} + "</style>"]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
@@ -88,7 +93,7 @@
 				<textElement textAlignment="Center">
 					<font size="12" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Recibe Conforme]]></text>
+				<text><![CDATA[Da De Baja Empleado]]></text>
 			</staticText>
 			<line>
 				<reportElement x="530" y="52" width="250" height="1" forecolor="#000000" uuid="a3a082e7-2417-43a5-a8a1-e269c0a58706"/>
@@ -112,26 +117,6 @@
 					<font fontName="Arial" size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA["<style pdfFontName='Helvetica-Bold'>"+"Ordenanza Numero 1306/HCD/91" + "</style>" + ": Para los casos de responsabilidad personal por desaparición, variación o daños de bienes en la delimitación de la misma se tomará como valor, no el que figure en los registros historicos del cargo, sino el de reposicion a la época que se verificó tal circunstancia."]]></textFieldExpression>
-			</textField>
-			<staticText>
-				<reportElement x="270" y="62" width="250" height="20" uuid="bc4ea426-3dc7-4b70-8589-8243888e4daa"/>
-				<textElement textAlignment="Center">
-					<font size="12" isBold="true"/>
-				</textElement>
-				<text><![CDATA[Entrega]]></text>
-			</staticText>
-			<line>
-				<reportElement x="270" y="52" width="250" height="1" forecolor="#000000" uuid="3262b388-48e2-4fd0-bbdd-8ade771088fc"/>
-				<graphicElement>
-					<pen lineStyle="Dotted"/>
-				</graphicElement>
-			</line>
-			<textField>
-				<reportElement x="270" y="82" width="250" height="20" uuid="97fb152e-10a0-4ff6-b686-79ccc65911da"/>
-				<textElement textAlignment="Center">
-					<font size="12"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{nombreEmpleado} + " (" + $P{legajoEmpleado} + ")"]]></textFieldExpression>
 			</textField>
 		</band>
 	</summary>

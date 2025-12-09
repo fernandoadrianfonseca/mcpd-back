@@ -100,4 +100,34 @@ public class ProductosInformacionService {
         }
         return repository.saveAll(series);
     }
+
+    public List<ProductosInformacion> obtenerCodigosLibres(Integer idStock, Integer cantidad, List<Integer> idsYaElegidos) {
+
+        // Si viene null o vacía → usar un valor imposible
+        if (idsYaElegidos == null || idsYaElegidos.isEmpty()) {
+            idsYaElegidos = List.of(0);
+        }
+
+        return repository.findCodigosLibres(idStock, cantidad, idsYaElegidos);
+    }
+
+    public List<ProductosInformacion> obtenerActivosXStockId(Integer idStock, Integer cantidad, List<Integer> idsYaElegidos) {
+
+        // Si viene null o vacía → usar un valor imposible
+        if (idsYaElegidos == null || idsYaElegidos.isEmpty()) {
+            idsYaElegidos = List.of(0);
+        }
+
+        return repository.findActivosXStockId(idStock, cantidad, idsYaElegidos);
+    }
+
+    public List<ProductosInformacion> obtenerCodigosEnCustodiaXEmpleado(Integer idStock, Integer cantidad, Integer legajo, List<Integer> idsYaElegidos) {
+
+        // Si viene null o vacía → usar un valor imposible
+        if (idsYaElegidos == null || idsYaElegidos.isEmpty()) {
+            idsYaElegidos = List.of(0);
+        }
+
+        return repository.findCodigosEnCustodiaXEmpleado(idStock, cantidad, legajo, idsYaElegidos);
+    }
 }

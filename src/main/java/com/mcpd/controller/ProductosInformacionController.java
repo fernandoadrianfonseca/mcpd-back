@@ -96,4 +96,38 @@ public class ProductosInformacionController {
     public List<ProductosInformacion> darDeBajaNumerosDeSerie(@RequestBody List<Integer> ids) {
         return service.darDeBajaNumerosDeSerie(ids);
     }
+
+    @PostMapping("/codigos-libres/{idStock}/{cantidad}")
+    public ResponseEntity<List<ProductosInformacion>> getCodigosLibres(
+            @PathVariable Integer idStock,
+            @PathVariable Integer cantidad,
+            @RequestBody List<Integer> idsYaElegidos) {
+
+        return ResponseEntity.ok(
+                service.obtenerCodigosLibres(idStock, cantidad, idsYaElegidos)
+        );
+    }
+
+    @PostMapping("/codigos-encustodia/{idStock}/{cantidad}/{legajo}")
+    public ResponseEntity<List<ProductosInformacion>> getCodigosLibres(
+            @PathVariable Integer idStock,
+            @PathVariable Integer cantidad,
+            @PathVariable Integer legajo,
+            @RequestBody List<Integer> idsYaElegidos) {
+
+        return ResponseEntity.ok(
+                service.obtenerCodigosEnCustodiaXEmpleado(idStock, cantidad, legajo, idsYaElegidos)
+        );
+    }
+
+    @PostMapping("/codigos-activos/{idStock}/{cantidad}")
+    public ResponseEntity<List<ProductosInformacion>> getCodigosActivos(
+            @PathVariable Integer idStock,
+            @PathVariable Integer cantidad,
+            @RequestBody List<Integer> idsYaElegidos) {
+
+        return ResponseEntity.ok(
+                service.obtenerActivosXStockId(idStock, cantidad, idsYaElegidos)
+        );
+    }
 }

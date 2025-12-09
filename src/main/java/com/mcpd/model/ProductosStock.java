@@ -52,6 +52,9 @@ public class ProductosStock {
     @Column(name = "con_devolucion", nullable = false)
     private Boolean conDevolucion;
 
+    @Transient
+    private Integer cantidadCustodiaLegajo;
+
     @PrePersist
     protected void onCreate() {
         fechaDeCarga = new Date();
@@ -173,5 +176,13 @@ public class ProductosStock {
 
     public void setConDevolucion(Boolean conDevolucion) {
         this.conDevolucion = conDevolucion;
+    }
+
+    public Integer getCantidadCustodiaLegajo() {
+        return cantidadCustodiaLegajo;
+    }
+
+    public void setCantidadCustodiaLegajo(Integer cantidadCustodiaLegajo) {
+        this.cantidadCustodiaLegajo = cantidadCustodiaLegajo;
     }
 }

@@ -5,9 +5,8 @@
 	<parameter name="codigoOperacion" class="java.lang.String"/>
 	<parameter name="nombreEmpleado" class="java.lang.String"/>
 	<parameter name="legajoEmpleado" class="java.lang.String"/>
-	<parameter name="nombreEmpleadoEntrega" class="java.lang.String"/>
-	<parameter name="legajoEmpleadoEntrega" class="java.lang.String"/>
-	<parameter name="dependenciaAutoriza" class="java.lang.String"/>
+	<parameter name="nombreEmpleadoRecibe" class="java.lang.String"/>
+	<parameter name="legajoEmpleadoRecibe" class="java.lang.String"/>
 	<field name="cantidad" class="java.lang.Number"/>
 	<field name="descripcion" class="java.lang.String"/>
 	<field name="oc" class="java.lang.String"/>
@@ -57,7 +56,7 @@
 				<textElement textAlignment="Center">
 					<font size="18" isBold="true"/>
 				</textElement>
-				<text><![CDATA[ORDEN DE ENTREGA]]></text>
+				<text><![CDATA[ACTA DE DEVOLUCIÓN PATRIMONIAL]]></text>
 			</staticText>
 			<line>
 				<reportElement x="0" y="215" width="802" height="1" uuid="b905bee2-eedb-4296-a106-cd8f0418ac64"/>
@@ -91,7 +90,7 @@
 				<textElement textAlignment="Center">
 					<font size="12" isBold="true"/>
 				</textElement>
-				<text><![CDATA[RecibÍ Conforme]]></text>
+				<text><![CDATA[Recibe Conforme]]></text>
 			</staticText>
 			<line>
 				<reportElement x="530" y="52" width="250" height="1" forecolor="#000000" uuid="a3a082e7-2417-43a5-a8a1-e269c0a58706"/>
@@ -104,7 +103,7 @@
 				<textElement textAlignment="Center">
 					<font size="12"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{nombreEmpleado} + " (" + $P{legajoEmpleado} + ")"]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{nombreEmpleadoRecibe} + " (" + $P{legajoEmpleadoRecibe} + ")"]]></textFieldExpression>
 			</textField>
 			<textField textAdjust="StretchHeight">
 				<reportElement x="0" y="127" width="802" height="50" uuid="ece4c2d8-8c66-4a85-8ff0-bbad64e889dc"/>
@@ -117,44 +116,24 @@
 				<textFieldExpression><![CDATA["<style pdfFontName='Helvetica-Bold'>"+"Ordenanza Numero 1306/HCD/91" + "</style>" + ": Para los casos de responsabilidad personal por desaparición, variación o daños de bienes en la delimitación de la misma se tomará como valor, no el que figure en los registros historicos del cargo, sino el de reposicion a la época que se verificó tal circunstancia."]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="270" y="62" width="250" height="20" uuid="9fb9bf4d-c73f-4810-ae36-ec9de0050125"/>
+				<reportElement x="270" y="62" width="250" height="20" uuid="bc4ea426-3dc7-4b70-8589-8243888e4daa"/>
 				<textElement textAlignment="Center">
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Entrega]]></text>
 			</staticText>
 			<line>
-				<reportElement x="270" y="52" width="250" height="1" forecolor="#000000" uuid="a37d6343-6bb7-4a92-aa8f-c0d7ee839688"/>
+				<reportElement x="270" y="52" width="250" height="1" forecolor="#000000" uuid="3262b388-48e2-4fd0-bbdd-8ade771088fc"/>
 				<graphicElement>
 					<pen lineStyle="Dotted"/>
 				</graphicElement>
 			</line>
 			<textField>
-				<reportElement x="270" y="82" width="250" height="20" uuid="fcdb319e-3d11-4faf-b82a-6ecfa5404e1b"/>
+				<reportElement x="270" y="82" width="250" height="20" uuid="97fb152e-10a0-4ff6-b686-79ccc65911da"/>
 				<textElement textAlignment="Center">
 					<font size="12"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{nombreEmpleadoEntrega} + " (" + $P{legajoEmpleadoEntrega} + ")"]]></textFieldExpression>
-			</textField>
-			<staticText>
-				<reportElement x="10" y="62" width="250" height="20" uuid="4787ff88-e66c-4d35-b336-e8efcae0d04a"/>
-				<textElement textAlignment="Center">
-					<font size="12" isBold="true"/>
-				</textElement>
-				<text><![CDATA[Autoriza Dependencia]]></text>
-			</staticText>
-			<line>
-				<reportElement x="10" y="52" width="250" height="1" forecolor="#000000" uuid="b678b693-2dd6-48e0-a84b-554943ad8305"/>
-				<graphicElement>
-					<pen lineStyle="Dotted"/>
-				</graphicElement>
-			</line>
-			<textField>
-				<reportElement x="10" y="82" width="250" height="20" uuid="56977a8b-3e61-4053-801d-675fbd185bd3"/>
-				<textElement textAlignment="Center">
-					<font size="12"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{dependenciaAutoriza}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{nombreEmpleado} + " (" + $P{legajoEmpleado} + ")"]]></textFieldExpression>
 			</textField>
 		</band>
 	</summary>

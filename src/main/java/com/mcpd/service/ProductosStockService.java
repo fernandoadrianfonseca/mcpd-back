@@ -49,7 +49,7 @@ public class ProductosStockService {
 
         return resultados.stream().map(dto -> {
             ProductosStock stock = dto.stock();
-            stock.setCantidadCustodia(dto.cantidadCustodia().intValue()); // Seteamos correctamente
+            stock.setCantidadCustodiaLegajo(dto.cantidadCustodia().intValue());
             return stock;
         })
         .sorted(Comparator.comparing(ProductosStock::getId))
@@ -61,7 +61,7 @@ public class ProductosStockService {
 
         return resultados.stream().map(dto -> {
             ProductosStock stock = dto.stock();
-            stock.setCantidadCustodia(dto.cantidadCustodia().intValue()); // Seteamos correctamente
+            stock.setCantidadCustodia(dto.cantidadCustodia().intValue());
             return stock;
         })
         .sorted(Comparator.comparing(ProductosStock::getId))
@@ -100,7 +100,7 @@ public class ProductosStockService {
             ProductosStockFlujo flujo = new ProductosStockFlujo();
             flujo.setProductoStock(stock);
             flujo.setCantidad(item.getCantidad());
-            flujo.setTotal(stock.getCantidad().longValue()); // Stock total
+            flujo.setTotal(stock.getCantidad().longValue());
             flujo.setTotalLegajoCustodia(totalLegajoAnterior + item.getCantidad());
             flujo.setTipo("custodia_alta");
             flujo.setEmpleadoCustodia(legajoCustodia);
@@ -135,7 +135,7 @@ public class ProductosStockService {
             ProductosStockFlujo flujo = new ProductosStockFlujo();
             flujo.setProductoStock(stock);
             flujo.setCantidad(item.getCantidad());
-            flujo.setTotal(stock.getCantidad().longValue()); // Stock total
+            flujo.setTotal(stock.getCantidad().longValue());
             flujo.setTotalLegajoCustodia(totalLegajoAnterior - item.getCantidad());
             flujo.setTipo("custodia_baja");
             flujo.setEmpleadoCustodia(legajoCustodia);
