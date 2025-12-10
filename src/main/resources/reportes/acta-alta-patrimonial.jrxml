@@ -75,9 +75,10 @@
 					<font size="13"/>
 				</textElement>
 				<textFieldExpression><![CDATA["<style pdfFontName='Helvetica-Bold'>" + String.format("%.2f", $F{cantidad}.doubleValue()) + "</style> " +
-					$F{descripcion} + 
-					" - <style pdfFontName='Helvetica-Bold'>Códigos:</style> " +
-					"<style forecolor='black'>" + $F{codigos} + "</style>" +
+					$F{descripcion} +
+					( ($F{codigos} != null && !$F{codigos}.trim().isEmpty())
+					? " - <style pdfFontName='Helvetica-Bold'>Códigos:</style> <style forecolor='black'>" + $F{codigos} + "</style>"
+					: "" ) +
 					" - <style pdfFontName='Helvetica-Bold'>Observaciones:</style> " +
                     "<style forecolor='black'>" + $F{observaciones} + "</style>"]]></textFieldExpression>
 			</textField>
