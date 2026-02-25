@@ -18,6 +18,30 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.List;
 
+/**
+ * Filtro de autenticación JWT para proteger endpoints del backend.
+ *
+ * <p>
+ * Implementa un filtro {@link org.springframework.web.filter.OncePerRequestFilter} que:
+ * <ol>
+ *   <li>Ignora OPTIONS (CORS preflight)</li>
+ *   <li>Ignora endpoints públicos (por ejemplo /auth/** y /logs)</li>
+ *   <li>Lee el header Authorization: Bearer &lt;token&gt;</li>
+ *   <li>Valida el JWT con {@link JwtService}</li>
+ *   <li>Construye un Authentication y lo coloca en {@link org.springframework.security.core.context.SecurityContextHolder}</li>
+ * </ol>
+ *
+ * <h3>Authorities</h3>
+ * <p>
+ * Se realiza un mapeo simple:
+ * <ul>
+ *   <li>perfil == 1 → ROLE_ADMIN</li>
+ *   <li>caso contrario → ROLE_USER</li>
+ * </ul>
+ *
+ * <p>
+ * Los claims se guardan en {@code auth.setDetails(claims)} para acceso posterior.
+ */
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
@@ -26,6 +50,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         this.jwtService = jwtService;
     }
 
+    /**
+     * Aplica la autenticación por JWT si el request no pertenece a la whitelist.
+     *
+     * <p>
+     * Si el token es inválido o expiró, se limpia el SecurityContext y se continúa
+     * el chain para que la configuración de security resuelva el 401/403.
+     *
+     * @param request request HTTP.
+     * @param response response HTTP.
+     * @param filterChain cadena de filtros.
+     */
     @Override
     protected void doFilterInternal(
             @NonNull HttpServletRequest request,

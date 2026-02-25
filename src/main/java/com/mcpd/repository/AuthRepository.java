@@ -10,12 +10,39 @@ import org.springframework.stereotype.Repository;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 
+/**
+ * Repositorio de autenticación basado en procedimientos almacenados (SQL Server).
+ *
+ * <p>
+ * Encapsula la invocación a stored procedures del esquema de seguridad:
+ * <ul>
+ *   <li>{@code seguridadVerificaUsuario}: autentica credenciales y devuelve datos del usuario</li>
+ *   <li>{@code seguridadModificaUsuario}: cambia contraseña del usuario</li>
+ *   <li>{@code seguridadBlanqueaUsuario}: resetea/blanquea contraseña del usuario</li>
+ * </ul>
+ *
+ * <p>
+ * Este repositorio utiliza {@link jakarta.persistence.EntityManager} y {@link jakarta.persistence.StoredProcedureQuery}
+ * para ejecutar SPs y mapear el resultado a {@link com.mcpd.dto.UsuarioDto}.
+ */
 @Repository
 public class AuthRepository {
 
     @PersistenceContext
     private EntityManager entityManager;
 
+    /**
+     * Ejecuta el procedimiento {@code seguridadVerificaUsuario} para autenticar un usuario.
+     *
+     * <p>
+     * Si el procedimiento devuelve resultado, mapea el primer row a {@link UsuarioDto}.
+     * El campo {@code vence} se formatea como {@code yyyy-MM-dd}.
+     *
+     * @param usuario nombre de usuario.
+     * @param password contraseña.
+     * @return {@link UsuarioDto} si hubo resultado; {@code null} si no se autenticó.
+     * @throws RuntimeException ante errores de ejecución/mapeo del procedimiento.
+     */
     public UsuarioDto autenticarUsuario(String usuario, String password) {
         try {
             StoredProcedureQuery query = entityManager.createStoredProcedureQuery("seguridadVerificaUsuario");
@@ -53,6 +80,13 @@ public class AuthRepository {
         return null;
     }
 
+    /**
+     * Ejecuta el procedimiento {@code seguridadModificaUsuario} para actualizar la contraseña.
+     *
+     * @param usuario nombre de usuario.
+     * @param password nueva contraseña.
+     * @throws RuntimeException ante errores de ejecución del procedimiento.
+     */
     public void modificarUsuario(String usuario, String password) {
         try {
             StoredProcedureQuery query = entityManager.createStoredProcedureQuery("seguridadModificaUsuario");
@@ -69,6 +103,12 @@ public class AuthRepository {
         }
     }
 
+    /**
+     * Ejecuta el procedimiento {@code seguridadBlanqueaUsuario} para resetear/blanquear la contraseña.
+     *
+     * @param usuario nombre de usuario.
+     * @throws RuntimeException ante errores de ejecución del procedimiento.
+     */
     public void blanquearUsuario(String usuario) {
         try {
             StoredProcedureQuery query = entityManager.createStoredProcedureQuery("seguridadBlanqueaUsuario");

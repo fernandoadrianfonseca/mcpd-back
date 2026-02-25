@@ -5,41 +5,80 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+/**
+ * Entidad que representa a un empleado municipal dentro del sistema RRHH.
+ *
+ * Contribuyente (datos personales/fiscales)
+ *         ↓
+ * Empleado (rol laboral interno)
+ *         ↓
+ * Liquidación / RRHH / Permisos / Sistema
+ *
+ * <p>
+ * El empleado está identificado por su número de legajo y se vincula
+ * indirectamente con {@link Contribuyente} mediante el CUIL para obtener
+ * información personal como el nombre.
+ * </p>
+ *
+ * <h3>Responsabilidades del modelo</h3>
+ * <ul>
+ *   <li>Almacenar información laboral y administrativa.</li>
+ *   <li>Gestionar adicionales, licencias y condiciones especiales.</li>
+ *   <li>Definir características funcionales y de perfil.</li>
+ * </ul>
+ *
+ * <p>
+ * El campo {@code nombre} es transitorio y se utiliza únicamente
+ * para enriquecer la respuesta del API con el nombre proveniente
+ * de {@link Contribuyente}.
+ * </p>
+ */
 @Entity
 @Table(name = "rrhhempleado")
 public class Empleado implements Serializable {
 
+    /** Número de legajo del empleado (clave primaria). */
     @Id
     @Column(name = "legajo", nullable = false)
     private Long legajo;
 
+    /** CUIL del empleado (relacionable con Contribuyente). */
     @Column(name = "cuil", nullable = false)
     private Long cuil;
 
+    /** Categoría escalafonaria. */
     @Column(name = "categoria")
     private Integer categoria;
 
+    /** Número de cuenta asociada (por ejemplo bancaria o interna). */
     @Column(name = "cuenta", length = 50)
     private String cuenta;
 
+    /** Indica si el empleado se encuentra activo. */
     @Column(name = "activo", nullable = false)
     private Boolean activo = false;
 
+    /** Fecha y hora de ingreso al municipio. */
     @Column(name = "fechaingreso")
     private LocalDateTime fechaIngreso;
 
+    /** Código de agrupamiento laboral. */
     @Column(name = "agrupamiento", nullable = false)
     private Integer agrupamiento;
 
+    /** Indica si posee cónyuge registrada. */
     @Column(name = "esposa", nullable = false)
     private Boolean esposa = false;
 
+    /** Cantidad de hijos declarados. */
     @Column(name = "hijos", nullable = false)
     private Integer hijos = 0;
 
+    /** Cantidad de hijos en escuela primaria. */
     @Column(name = "escprim", nullable = false)
     private Integer escprim = 0;
 
+    /** Cantidad de hijos en escuela secundaria. */
     @Column(name = "escsec", nullable = false)
     private Integer escsec = 0;
 
@@ -49,48 +88,58 @@ public class Empleado implements Serializable {
     @Column(name = "ayudasec", nullable = false)
     private Integer ayudasec = 0;
 
+    /** Hijos con discapacidad. */
     @Column(name = "hijoinc", nullable = false)
     private Integer hijoinc = 0;
 
+    /** Adicional por título. */
     @Column(name = "titulo", nullable = false)
     private Integer titulo = 0;
 
+    /** Indica si está en carpeta médica. */
     @Column(name = "carpeta", nullable = false)
     private Boolean carpeta = false;
 
+    /** Fecha de inicio de carpeta médica. */
     @Column(name = "fechacarpeta", nullable = false)
     private LocalDateTime fechaCarpeta = LocalDateTime.of(1900, 1, 1, 0, 0);
 
     @Column(name = "usopc")
     private Boolean usoPc;
 
+    /** Indica si tiene manejo de fondos. */
     @Column(name = "manejofondos", nullable = false)
     private Boolean manejoFondos = false;
 
+    /** Cumple funciones de inspector. */
     @Column(name = "inspector", nullable = false)
     private Boolean inspector = false;
 
     @Column(name = "puericultura", nullable = false)
     private Boolean puericultura = false;
 
+    /** Adicional por jefatura. */
     @Column(name = "jefatura", nullable = false)
     private Boolean jefatura = false;
 
     @Column(name = "laboreventual", nullable = false)
     private Boolean laborEventual = false;
 
+    /** Adicional por riesgo. */
     @Column(name = "riesgo", nullable = false)
     private Boolean riesgo = false;
 
     @Column(name = "encargadocuadrilla", nullable = false)
     private Boolean encargadoCuadrilla = false;
 
+    /** Último ascenso registrado. */
     @Column(name = "ultimoascenso", nullable = false)
     private LocalDateTime ultimoAscenso = LocalDateTime.of(1900, 1, 1, 0, 0);;
 
     @Column(name = "isprovol", nullable = false)
     private Boolean isprovol = false;
 
+    /** Indica si posee familiar a cargo. */
     @Column(name = "familiaracargo", nullable = false)
     private Boolean familiarAcargo = false;
 
@@ -121,12 +170,14 @@ public class Empleado implements Serializable {
     @Column(name = "ate", nullable = false)
     private Boolean ate = false;
 
+    /** Secretaría o área administrativa. */
     @Column(name = "secretaria", length = 50)
     private String secretaria;
 
     @Column(name = "comision", nullable = false)
     private Boolean comision = false;
 
+    /** Adicional por nocturnidad. */
     @Column(name = "nocturnidad", nullable = false)
     private Boolean nocturnidad = false;
 
@@ -148,15 +199,34 @@ public class Empleado implements Serializable {
     @Column(name = "vacacionespolitica", nullable = false)
     private Float vacacionesPolitica = 0.0f;
 
+    /** Última fecha de actualización del registro. */
     @Column(name = "actualizado", nullable = false)
     private LocalDateTime actualizado = LocalDateTime.of(1900, 1, 1, 0, 0);
 
+    /** Horas extra al 100%. */
     @Column(name = "horas100", nullable = false)
     private Float horas100 = 0.0f;
 
+    /** Horas extra al 50%. */
     @Column(name = "horas50", nullable = false)
     private Float horas50 = 0.0f;
 
+    /**
+     * Indica si el empleado posee acceso al sistema informático institucional.
+     *
+     * <p>
+     * Cuando es {@code true}, el empleado puede autenticarse y utilizar
+     * funcionalidades del sistema según su {@link #perfil}.
+     * </p>
+     *
+     * <p>
+     * Cuando es {@code false}, el empleado no tiene habilitado el acceso,
+     * independientemente de su rol o dependencia.
+     * </p>
+     *
+     * Este campo es obligatorio y se utiliza como bandera de control
+     * de acceso a nivel lógico.
+     */
     @Column(name = "sistema", nullable = false)
     private Boolean sistema;
 
@@ -164,12 +234,15 @@ public class Empleado implements Serializable {
     @Column(name = "dato", nullable = false)
     private byte[] dato;*/
 
+    /** Fecha de vencimiento administrativa (por ejemplo contrato). */
     @Column(name = "vence", nullable = false)
     private LocalDate vence = LocalDate.of(1900, 1, 1);
 
+    /** Dependencia funcional del empleado. */
     @Column(name = "dependencia", nullable = false, length = 50)
     private String dependencia;
 
+    /** Perfil de sistema (por defecto 3). */
     @Column(name = "perfil", nullable = false)
     private Integer perfil = 3;
 
@@ -179,18 +252,22 @@ public class Empleado implements Serializable {
     @Column(name = "cuidadorhsc", nullable = false)
     private Boolean cuidadorHSC = false;
 
+    /** Cumple tareas de recolector. */
     @Column(name = "recolector", nullable = false)
     private Boolean recolector = false;
 
+    /** Cumple tareas en tránsito. */
     @Column(name = "transito", nullable = false)
     private Boolean transito = false;
 
+    /** Cumple funciones en bromatología. */
     @Column(name = "bromatologia", nullable = false)
     private Boolean bromatologia = false;
 
     @Column(name = "obra", nullable = false)
     private Boolean obra = false;
 
+    /** Cumple tareas en ambiente. */
     @Column(name = "ambiente", nullable = false)
     private Boolean ambiente = false;
 
@@ -203,6 +280,7 @@ public class Empleado implements Serializable {
     @Column(name = "ordenanza", nullable = false)
     private Boolean ordenanza = false;
 
+    /** Cumple funciones en flota pesada. */
     @Column(name = "flotapesada", nullable = false)
     private Boolean flotaPesada = false;
 
@@ -236,6 +314,12 @@ public class Empleado implements Serializable {
     @Column(name = "trabajaenprovincia", nullable = false)
     private Boolean trabajaEnProvincia = false;
 
+    /**
+     * Nombre completo del empleado.
+     *
+     * Se obtiene mediante LEFT JOIN con {@link Contribuyente}
+     * usando el CUIL como referencia.
+     */
     @Transient
     private String nombre;
 

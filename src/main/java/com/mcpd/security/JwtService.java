@@ -13,6 +13,32 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Servicio de emisión y validación de tokens JWT.
+ *
+ * <p>
+ * Genera tokens firmados (HS256) utilizando una clave simétrica configurada
+ * vía propiedades:
+ * <ul>
+ *   <li>{@code app.jwt.secret}</li>
+ *   <li>{@code app.jwt.expiration-minutes}</li>
+ *   <li>{@code app.jwt.issuer}</li>
+ * </ul>
+ *
+ * <p>
+ * El token incluye claims utilizados para autorización y contexto:
+ * <ul>
+ *   <li>perfil</li>
+ *   <li>modulo</li>
+ *   <li>legajo</li>
+ *   <li>dependencia</li>
+ *   <li>secretaria</li>
+ *   <li>administracion</li>
+ * </ul>
+ *
+ * <p>
+ * La validación exige el issuer configurado y verifica firma/expiración.
+ */
 @Service
 public class JwtService {
 
@@ -29,6 +55,19 @@ public class JwtService {
         this.issuer = issuer;
     }
 
+    /**
+     * Genera un JWT para el usuario autenticado.
+     *
+     * <p>
+     * El {@code subject} se establece como:
+     * <ul>
+     *   <li>{@code u.nombre} si está disponible</li>
+     *   <li>caso contrario, {@code u.legajo}</li>
+     * </ul>
+     *
+     * @param u usuario autenticado.
+     * @return token JWT compacto (String).
+     */
     public String generateToken(UsuarioDto u) {
         Map<String, Object> claims = new HashMap<>();
         // Incluí claims útiles para autorización en el filtro
@@ -50,6 +89,13 @@ public class JwtService {
                 .compact();
     }
 
+    /**
+     * Valida un token JWT verificando firma, expiración e issuer.
+     *
+     * @param token token JWT (sin el prefijo "Bearer ").
+     * @return {@link Jws} con {@link Claims} si el token es válido.
+     * @throws JwtException si el token es inválido/expiró/falla validación.
+     */
     public Jws<Claims> validate(String token) throws JwtException {
         return Jwts.parserBuilder()
                 .requireIssuer(issuer)

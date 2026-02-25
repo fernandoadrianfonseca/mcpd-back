@@ -1,6 +1,5 @@
 package com.mcpd.service;
 
-import com.mcpd.config.ControllerLoggingAspect;
 import com.mcpd.model.ReportesLog;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
@@ -9,22 +8,44 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
-
 import java.io.InputStream;
 import java.nio.file.Paths;
-import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.io.File;
 import java.io.FileOutputStream;
 
+/**
+ * Servicio de generación de reportes PDF basado en JasperReports (.jrxml).
+ *
+ * <p>
+ * Responsabilidades:
+ * <ul>
+ *   <li>Localizar plantillas JRXML por nombre en {@code classpath:reportes/}</li>
+ *   <li>Compilar JRXML a {@link net.sf.jasperreports.engine.JasperReport}</li>
+ *   <li>Ejecutar el fill con parámetros y datasource (vacío o lista)</li>
+ *   <li>Exportar a PDF (byte[])</li>
+ *   <li>Registrar auditoría en {@link com.mcpd.model.ReportesLog}</li>
+ *   <li>(Opcional) Guardar el PDF en disco según configuración</li>
+ * </ul>
+ *
+ * <h3>Convenciones relevantes</h3>
+ * <ul>
+ *   <li>Si {@code cantidadCopias} es null o <= 0, se asume 1.</li>
+ *   <li>Se fuerza {@code REPORT_CLASS_LOADER} para resolver recursos/clases en Jasper.</li>
+ *   <li>Se agrega parámetro {@code fecha} si no viene informado (formato dd/MM/yyyy).</li>
+ *   <li>Si {@code fechaDevolucion} viene en parámetros, se parsea como Instant ISO-8601 y se formatea a dd/MM/yyyy (America/Argentina/Buenos_Aires).</li>
+ *   <li>Se genera {@code codigoOperacion} para trazabilidad (OP-epochSecond).</li>
+ * </ul>
+ *
+ * Basado en la documentación oficial del módulo de reportes. :contentReference[oaicite:1]{index=1}
+ */
 @Service
 public class ReporteService {
 
@@ -44,6 +65,29 @@ public class ReporteService {
         this.reportesLogService = reportesLogService;
     }
 
+    /**
+     * Genera un reporte Jasper sin datasource (sin lista), utilizando {@link net.sf.jasperreports.engine.JREmptyDataSource}.
+     *
+     * <p>
+     * Flujo:
+     * <ol>
+     *   <li>Normaliza copias (default 1)</li>
+     *   <li>Enriquece parámetros (REPORT_CLASS_LOADER, fecha, fechaDevolucion formateada, codigoOperacion)</li>
+     *   <li>Registra auditoría en {@link ReportesLog}</li>
+     *   <li>Compila y ejecuta el JRXML</li>
+     *   <li>Duplica páginas para simular copias si corresponde</li>
+     *   <li>Exporta a PDF y retorna {@code byte[]}</li>
+     *   <li>(Opcional) guarda el archivo en disco según configuración</li>
+     * </ol>
+     *
+     * @param nombreReporte nombre del JRXML (sin extensión) en {@code resources/reportes}.
+     * @param generaReporteLegajo legajo del usuario que genera el reporte.
+     * @param generaReporteNombre nombre del usuario que genera el reporte.
+     * @param parametros parámetros declarados en el JRXML.
+     * @param cantidadCopias cantidad de copias (páginas duplicadas) del PDF.
+     * @return PDF generado en formato {@code byte[]}.
+     * @throws RuntimeException si ocurre un error al compilar/llenar/exportar el reporte.
+     */
     public byte[] generarReporte(String nombreReporte,
                                  String generaReporteLegajo,
                                  String generaReporteNombre,
@@ -79,6 +123,26 @@ public class ReporteService {
         }
     }
 
+    /**
+     * Genera un reporte Jasper con datasource basado en una lista de beans.
+     *
+     * <p>
+     * Utiliza {@link JRBeanCollectionDataSource} para exponer los datos como fields
+     * en el JRXML (vía {@code $F{...}}).
+     *
+     * <p>
+     * Además de los pasos de {@link #generarReporte(String, String, String, Map, Integer)},
+     * registra la auditoría incluyendo los datos recibidos y ejecuta el fill con datasource.
+     *
+     * @param nombreReporte nombre del JRXML (sin extensión) en {@code resources/reportes}.
+     * @param generaReporteLegajo legajo del usuario que genera el reporte.
+     * @param generaReporteNombre nombre del usuario que genera el reporte.
+     * @param parametros parámetros declarados en el JRXML.
+     * @param datos lista de beans utilizada como datasource.
+     * @param cantidadCopias cantidad de copias (páginas duplicadas) del PDF.
+     * @return PDF generado en formato {@code byte[]}.
+     * @throws RuntimeException si ocurre un error al compilar/llenar/exportar el reporte.
+     */
     public byte[] generarReporteConLista(String nombreReporte,
                                          String generaReporteLegajo,
                                          String generaReporteNombre,
@@ -123,6 +187,20 @@ public class ReporteService {
         }
     }
 
+    /**
+     * Guarda el PDF generado en disco si la propiedad {@code reports.savefiles} está habilitada.
+     *
+     * <p>
+     * - En producción ({@code reports.isproduction=true}) guarda en {@code reports.output-directory/<yyyy-MM-dd>/}.
+     * - En desarrollo guarda en {@code src/main/resources/reportes/generados/<yyyy-MM-dd>/}.
+     *
+     * El nombre del archivo se construye como:
+     * {@code <nombreReporte>-<codigoOperacion>.pdf}
+     *
+     * @param nombreReporte nombre del reporte ejecutado.
+     * @param codigoOperacion código único de operación asociado al reporte.
+     * @param pdfBytes contenido PDF.
+     */
     private void guardarArchivoEnDisco(String nombreReporte, String codigoOperacion, byte[] pdfBytes) {
         if (!guardarArchivos) return;
 
@@ -153,6 +231,20 @@ public class ReporteService {
         }
     }
 
+    /**
+     * Guarda el PDF generado en disco si la propiedad {@code reports.savefiles} está habilitada.
+     *
+     * <p>
+     * - En producción ({@code reports.isproduction=true}) guarda en {@code reports.output-directory/<yyyy-MM-dd>/}.
+     * - En desarrollo guarda en {@code src/main/resources/reportes/generados/<yyyy-MM-dd>/}.
+     *
+     * El nombre del archivo se construye como:
+     * {@code <nombreReporte>-<codigoOperacion>.pdf}
+     *
+     * @param nombreReporte nombre del reporte ejecutado.
+     * @param codigoOperacion código único de operación asociado al reporte.
+     * @param pdfBytes contenido PDF.
+     */
     private void guardarLogReporte(String idReporte,
                                    String nombreReporte,
                                    String legajo,

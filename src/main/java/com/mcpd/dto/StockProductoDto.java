@@ -1,5 +1,39 @@
 package com.mcpd.dto;
 
+/**
+ * DTO que representa un resumen consolidado de stock por producto.
+ *
+ * Producto
+ *    ↓
+ * SUM(stock total)
+ *    ↓
+ * SUM(stock en custodia)
+ *    ↓
+ * Stock disponible
+ *
+ * <p>
+ * Se utiliza en consultas agregadas dentro del módulo
+ * {@code ProductosStock} para obtener totales agrupados
+ * por producto.
+ * </p>
+ *
+ * <h3>Finalidad</h3>
+ * <ul>
+ *   <li>Mostrar stock total por producto</li>
+ *   <li>Diferenciar unidades en custodia y disponibles</li>
+ *   <li>Servir como base para reportes o vistas de dashboard</li>
+ * </ul>
+ *
+ * <p>
+ * No representa una entidad persistente, sino el resultado
+ * de consultas agregadas (por ejemplo con GROUP BY).
+ * </p>
+ *
+ * <p>
+ * Complementa a {@code StockCategoriaDto}, pero a nivel
+ * de producto específico.
+ * </p>
+ */
 public class StockProductoDto {
 
     private Integer productoId;
@@ -11,11 +45,36 @@ public class StockProductoDto {
 
     public StockProductoDto(Integer productoId, String productoNombre, String categoriaNombre,
                             Long total, Long totalCustodia, Long totalDisponible) {
+
+        /** Identificador del producto. */
         this.productoId = productoId;
+
+        /** Nombre descriptivo del producto. */
         this.productoNombre = productoNombre;
+
+        /** Nombre de la categoría a la que pertenece el producto. */
         this.categoriaNombre = categoriaNombre;
+
+        /**
+         * Total general de unidades registradas del producto.
+         *
+         * Incluye unidades en custodia y disponibles.
+         */
         this.total = total;
+
+        /**
+         * Total de unidades actualmente asignadas en custodia.
+         *
+         * Representa el stock entregado a empleados.
+         */
         this.totalCustodia = totalCustodia;
+
+        /**
+         * Total de unidades disponibles en pañol.
+         *
+         * Calculado como:
+         * total - totalCustodia
+         */
         this.totalDisponible = totalDisponible;
     }
 

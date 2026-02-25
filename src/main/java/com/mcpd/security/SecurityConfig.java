@@ -23,6 +23,31 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.List;
 
+/**
+ * Configuración de seguridad Spring Security para el backend.
+ *
+ * <p>
+ * Define un esquema stateless basado en JWT con dos cadenas de filtros:
+ * <ol>
+ *   <li><b>Whitelist</b> (Order 0): permite sin autenticación endpoints públicos (por ejemplo /auth/** y /logs).</li>
+ *   <li><b>API protegida</b> (Order 1): requiere JWT para el resto de endpoints.</li>
+ * </ol>
+ *
+ * <h3>Características</h3>
+ * <ul>
+ *   <li>CSRF deshabilitado (API stateless)</li>
+ *   <li>CORS habilitado por configuración global</li>
+ *   <li>SessionCreationPolicy.STATELESS</li>
+ *   <li>EntryPoint 401 cuando falta auth</li>
+ *   <li>AccessDenied 403 cuando no tiene permisos</li>
+ *   <li>Inserta {@link JwtAuthenticationFilter} antes del UsernamePasswordAuthenticationFilter</li>
+ * </ul>
+ *
+ * <p>
+ * Nota: se incluye {@link org.springframework.security.core.userdetails.UserDetailsService}
+ * en memoria para compatibilidad/testing, aunque la autenticación principal del sistema
+ * se realiza vía JWT emitido por el módulo /auth.
+ */
 @Configuration
 @EnableWebSecurity
 //@EnableMethodSecurity
@@ -34,6 +59,15 @@ public class SecurityConfig {
         this.jwtService = jwtService;
     }
 
+    /**
+     * Cadena de seguridad para endpoints públicos (sin filtro JWT).
+     *
+     * <p>
+     * Permite libre acceso a rutas de autenticación y logging.
+     *
+     * @param http configuración de seguridad.
+     * @return SecurityFilterChain whitelist.
+     */
     // 1) Cadena WHITELIST: SOLO /auth/** y /logs (sin filtro JWT)
     @Bean
     @Order(0)
@@ -49,6 +83,18 @@ public class SecurityConfig {
         return http.build();
     }
 
+    /**
+     * Cadena de seguridad principal para la API protegida (JWT obligatorio).
+     *
+     * <p>
+     * Requiere autenticación para cualquier request que no esté en la whitelist.
+     * Configura manejo de errores estándar:
+     * - 401 si no autenticado
+     * - 403 si autenticado sin permisos
+     *
+     * @param http configuración de seguridad.
+     * @return SecurityFilterChain protegida.
+     */
     // 2) Cadena API: para TODO lo demás (con JWT)
     @Bean
     @Order(1)
@@ -73,6 +119,15 @@ public class SecurityConfig {
         return http.build();
     }
 
+    /**
+     * Configuración CORS global.
+     *
+     * <p>
+     * Actualmente permite cualquier origen/headers/métodos (útil en desarrollo).
+     * En producción se recomienda restringir {@code allowedOriginPatterns} al dominio real.
+     *
+     * @return fuente de configuración CORS.
+     */
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration cors = new CorsConfiguration();
@@ -86,6 +141,11 @@ public class SecurityConfig {
         return src;
     }
 
+    /**
+     * UserDetailsService en memoria (soporte para pruebas/compatibilidad).
+     *
+     * No reemplaza el mecanismo principal del sistema (JWT).
+     */
     @Bean
     public UserDetailsService userDetailsService() {
         InMemoryUserDetailsManager manager = new InMemoryUserDetailsManager();
@@ -96,6 +156,9 @@ public class SecurityConfig {
         return manager;
     }
 
+    /**
+     * PasswordEncoder utilizado por el UserDetailsService en memoria.
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
